@@ -1,0 +1,52 @@
+@model LoginRequest
+@{
+    ViewData["Title"] = "Sign In";
+}
+
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="text-center mb-4">
+            <a class="amazon-logo fs-1 text-dark text-decoration-none" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-shopping-bag"></i> E<span class="text-warning">Commerce</span>
+            </a>
+        </div>
+        <h1 class="fs-4">Sign in</h1>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger py-2 small" role="alert">
+                @Html.ValidationSummary(false, "", new { @class = "mb-0" })
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" type="email" autocomplete="email" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" class="form-control" type="password" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label small">Keep me signed in</label>
+            </div>
+            <button type="submit" class="btn btn-amazon-yellow mb-3">Sign in</button>
+            <div class="text-end">
+                <a asp-action="ForgotPassword" class="small text-decoration-none">Forgot password?</a>
+            </div>
+        </form>
+
+        <div class="auth-divider">
+            <span>New to ECommerce?</span>
+        </div>
+        <a asp-action="Register" class="btn btn-outline-amazon">Create your account</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

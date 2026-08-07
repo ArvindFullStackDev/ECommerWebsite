@@ -1,0 +1,8 @@
+2026-07-28 13:09:26.461 +05:30 [INF] Processing request GetAllProductsQuery
+2026-07-28 13:09:26.800 +05:30 [INF] Completed request GetAllProductsQuery
+2026-07-28 13:09:26.802 +05:30 [INF] Processing request GetAllProductsQuery
+2026-07-28 13:09:26.851 +05:30 [INF] Completed request GetAllProductsQuery
+2026-07-28 13:09:26.852 +05:30 [INF] Processing request GetAllProductsQuery
+2026-07-28 13:09:26.903 +05:30 [INF] Completed request GetAllProductsQuery
+2026-07-28 13:09:27.318 +05:30 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-07-28 13:09:27.330 +05:30 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.

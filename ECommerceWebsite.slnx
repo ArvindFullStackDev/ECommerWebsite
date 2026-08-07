@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Application/Application.csproj" />
+    <Project Path="src/Domain/Domain.csproj" />
+    <Project Path="src/Infrastructure/Infrastructure.csproj" />
+    <Project Path="src/Persistence/Persistence.csproj" />
+    <Project Path="src/Shared/Shared.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/">
+    <Project Path="src/Modules/Admin/Admin.csproj" />
+    <Project Path="src/Modules/Cart/Cart.csproj" />
+    <Project Path="src/Modules/Catalog/Catalog.csproj" />
+    <Project Path="src/Modules/Identity/Identity.csproj" />
+    <Project Path="src/Modules/Inventory/Inventory.csproj" />
+    <Project Path="src/Modules/Notification/Notification.csproj" />
+    <Project Path="src/Modules/Orders/Orders.csproj" />
+    <Project Path="src/Modules/Payments/Payments.csproj" />
+    <Project Path="src/Modules/Reporting/Reporting.csproj" />
+    <Project Path="src/Modules/Reviews/Reviews.csproj" />
+    <Project Path="src/Modules/Wishlist/Wishlist.csproj" />
+  </Folder>
+  <Folder Name="/src/Presentation/">
+    <Project Path="src/Presentation/WebUI/WebUI.csproj" />
+  </Folder>
+</Solution>

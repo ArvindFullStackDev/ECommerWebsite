@@ -1,0 +1,40 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="dropdown">
+        <a class="nav-link text-white text-center dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle"></i>
+            <span class="d-none d-lg-block small">Hello, @User.Identity?.Name</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i class="fas fa-user me-2"></i>Your Profile</a></li>
+            <li><a class="dropdown-item" asp-controller="Order" asp-action="Index"><i class="fas fa-box me-2"></i>Your Orders</a></li>
+            <li><a class="dropdown-item" asp-controller="Wishlist" asp-action="Index"><i class="fas fa-heart me-2"></i>Wishlist</a></li>
+            <li><a class="dropdown-item" asp-controller="Account" asp-action="Addresses"><i class="fas fa-address-book me-2"></i>Addresses</a></li>
+            @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+            {
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="fas fa-tachometer-alt me-2"></i>Admin Panel</a></li>
+            }
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Sign Out</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <div class="d-flex align-items-center">
+        <a class="nav-link text-white text-center me-2" asp-controller="Account" asp-action="Login">
+            <i class="fas fa-user-circle"></i>
+            <span class="d-none d-lg-block small">Hello, Sign in</span>
+            <span class="d-none d-lg-block fw-bold small">Account & Lists</span>
+        </a>
+    </div>
+}

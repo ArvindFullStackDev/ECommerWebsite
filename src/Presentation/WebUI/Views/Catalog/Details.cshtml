@@ -1,0 +1,167 @@
+@model ProductDto
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container-fluid px-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Catalog" asp-action="Index">Products</a></li>
+            <li class="breadcrumb-item active">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="content-section">
+        <div class="row g-4">
+            <!-- Images -->
+            <div class="col-md-5">
+                <div class="product-detail">
+                    <img src="@(Model.PrimaryImageUrl ?? "https://via.placeholder.com/450x450/f3f3f3/333?text=Product")" class="gallery-img img-fluid border rounded mb-3" alt="@Model.Name" id="mainImage" />
+                    @if (Model.ImageUrls.Any())
+                    {
+                        <div class="d-flex flex-wrap">
+                            @foreach (var img in Model.ImageUrls)
+                            {
+                                <img src="@img" class="thumb-img @(img == Model.PrimaryImageUrl ? "active" : "")" data-image="@img" alt="Thumbnail" />
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-md-4">
+                <h1 class="fs-4 fw-normal">@Model.Name</h1>
+
+                <div class="mb-2">
+                    <span class="star-rating">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(Model.AverageRating))
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            else
+                            {
+                                <i class="far fa-star empty-star"></i>
+                            }
+                        }
+                        <span class="rating-text">@Model.ReviewCount ratings</span>
+                    </span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.BrandName))
+                {
+                    <p class="small mb-2">Brand: <a href="#" class="text-decoration-none">@Model.BrandName</a></p>
+                }
+
+                <hr />
+
+                @if (Model.Savings > 0)
+                {
+                    <p class="mb-1"><span class="text-muted text-decoration-line-through">$@Model.Price.ToString("N2")</span></p>
+                }
+                <div class="product-price fs-3 mb-2">
+                    $@Model.DisplayPrice?.ToString("N2")
+                </div>
+                @if (Model.Savings > 0)
+                {
+                    <p class="text-success small mb-2">You save $@Model.Savings?.ToString("N2") (@Model.SavingsPercent%)</p>
+                }
+
+                <hr />
+
+                @if (Model.StockQuantity > 0)
+                {
+                    <p class="text-success mb-2"><i class="fas fa-check-circle me-1"></i> In Stock</p>
+                }
+                else
+                {
+                    <p class="text-danger mb-2"><i class="fas fa-times-circle me-1"></i> Out of Stock</p>
+                }
+
+                <p class="small text-muted mb-3">Ships from and sold by ECommerce.</p>
+
+                @if (Model.StockQuantity > 0)
+                {
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <label class="small">Qty:</label>
+                        <div class="qty-selector">
+                            <button type="button" class="qty-minus">-</button>
+                            <input type="text" value="1" class="cart-qty-input" readonly />
+                            <button type="button" class="qty-plus">+</button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-amazon btn-lg w-100 mb-2 add-to-cart" data-product-id="@Model.Id">
+                        <i class="fas fa-shopping-cart me-1"></i> Add to Cart
+                    </button>
+                    <button class="btn btn-amazon-orange btn-lg w-100 mb-2">
+                        <i class="fas fa-bolt me-1"></i> Buy Now
+                    </button>
+                }
+
+                <button class="btn btn-outline-amazon w-100 add-to-wishlist" data-product-id="@Model.Id">
+                    <i class="fas fa-heart me-1"></i> Add to Wishlist
+                </button>
+
+                <hr class="my-3" />
+
+                <div class="small">
+                    <p class="mb-1"><strong>SKU:</strong> @(Model.SKU ?? "N/A")</p>
+                    @if (Model.Tags != null)
+                    {
+                        <div class="mt-2">
+                            @foreach (var tag in Model.Tags.Split(','))
+                            {
+                                <span class="badge bg-light text-dark me-1">@tag.Trim()</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="border rounded p-3">
+                    <div class="product-price fs-4 mb-2">
+                        $@Model.DisplayPrice?.ToString("N2")
+                    </div>
+                    <p class="text-success small mb-2">FREE delivery</p>
+                    <p class="small text-muted mb-2">Arrives in 3-5 business days</p>
+                    @if (Model.StockQuantity > 0)
+                    {
+                        <button class="btn btn-amazon w-100 mb-2 add-to-cart" data-product-id="@Model.Id">
+                            Add to Cart
+                        </button>
+                        <button class="btn btn-amazon-orange w-100">
+                            Buy Now
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Description -->
+    @if (!string.IsNullOrEmpty(Model.Description))
+    {
+        <div class="content-section mt-3">
+            <h5 class="fw-bold">Product Description</h5>
+            <p class="small">@Html.Raw(Model.Description)</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(function() {
+            $('.thumb-img').on('click', function() {
+                $('#mainImage').attr('src', $(this).data('image'));
+                $('.thumb-img').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+    </script>
+}

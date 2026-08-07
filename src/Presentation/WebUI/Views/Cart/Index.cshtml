@@ -1,0 +1,130 @@
+@model Cart
+@{
+    ViewData["Title"] = "Shopping Cart";
+    var activeItems = Model?.Items?.Where(i => !i.IsSavedForLater).ToList() ?? new();
+    var savedItems = Model?.Items?.Where(i => i.IsSavedForLater).ToList() ?? new();
+    var subtotal = activeItems.Sum(i => i.UnitPrice * i.Quantity);
+}
+
+<div class="container-fluid px-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active">Cart</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <!-- Cart Items -->
+        <div class="col-lg-8">
+            @if (!activeItems.Any())
+            {
+                <div class="content-section text-center py-5">
+                    <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                    <h4>Your cart is empty</h4>
+                    <p class="text-muted">Discover great deals on our store!</p>
+                    <a asp-controller="Catalog" asp-action="Index" class="btn btn-amazon">Shop Now</a>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Shopping Cart</h4>
+                    <span class="text-muted small">Price</span>
+                </div>
+
+                @foreach (var item in activeItems)
+                {
+                    <div class="cart-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <img src="@(item.Product.Images.FirstOrDefault()?.ImageUrl ?? "https://via.placeholder.com/120x120")" class="img-fluid" alt="@item.Product.Name">
+                            </div>
+                            <div class="col-md-5">
+                                <h6 class="mb-1">
+                                    <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.ProductId" class="text-decoration-none">
+                                        @item.Product.Name
+                                    </a>
+                                </h6>
+                                @if (!string.IsNullOrEmpty(item.Product.SKU))
+                                {
+                                    <small class="text-muted">SKU: @item.Product.SKU</small>
+                                }
+                                <div class="mt-2">
+                                    <a href="#" class="text-danger small me-3 remove-cart-item" data-cart-item-id="@item.Id">
+                                        <i class="fas fa-trash me-1"></i>Delete
+                                    </a>
+                                    <a href="#" class="small save-for-later" data-cart-item-id="@item.Id">
+                                        <i class="fas fa-bookmark me-1"></i>Save for later
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="qty-selector">
+                                    <button class="qty-minus" data-cart-item-id="@item.Id">-</button>
+                                    <input type="text" class="cart-qty-input" data-cart-item-id="@item.Id" value="@item.Quantity" readonly />
+                                    <button class="qty-plus" data-cart-item-id="@item.Id">+</button>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <span class="product-price fs-5">$@((item.UnitPrice * item.Quantity).ToString("N2"))</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (savedItems.Any())
+                {
+                    <h5 class="mt-4 mb-3">Saved for Later</h5>
+                    @foreach (var item in savedItems)
+                    {
+                        <div class="cart-item">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <img src="@(item.Product.Images.FirstOrDefault()?.ImageUrl ?? "https://via.placeholder.com/120x120")" alt="@item.Product.Name" class="img-fluid">
+                                </div>
+                                <div class="col-md-7">
+                                    <h6 class="mb-1">@item.Product.Name</h6>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="product-price">$@(item.UnitPrice.ToString("N2"))</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+
+        <!-- Cart Summary -->
+        @if (activeItems.Any())
+        {
+            <div class="col-lg-4">
+                <div class="cart-sidebar">
+                    <h5 class="mb-3">Order Summary</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Items (@activeItems.Sum(i => i.Quantity)):</span>
+                        <span>$@subtotal.ToString("N2")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Shipping:</span>
+                        <span class="text-success">FREE</span>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Order Total:</strong>
+                        <strong class="product-price fs-5">$@subtotal.ToString("N2")</strong>
+                    </div>
+                    <a asp-controller="Checkout" asp-action="Index" class="btn btn-amazon btn-lg w-100">
+                        <i class="fas fa-lock me-2"></i>Proceed to Checkout
+                    </a>
+                    <div class="text-center mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt me-1"></i>Secure checkout
+                        </small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,128 @@
+@model Order
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container-fluid px-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index">My Orders</a></li>
+            <li class="breadcrumb-item active">@Model.OrderNumber</li>
+        </ol>
+    </nav>
+
+    <!-- Status Timeline -->
+    <div class="content-section mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+                <h5 class="fw-bold mb-1">@Model.OrderNumber</h5>
+                <small class="text-muted">Placed on @Model.CreatedAt.ToString("MMMM dd, yyyy 'at' h:mm tt")</small>
+            </div>
+            <span class="badge fs-6 @(Model.Status switch
+            {
+                OrderStatus.Pending => "bg-warning text-dark",
+                OrderStatus.Processing => "bg-info",
+                OrderStatus.Shipped => "bg-primary",
+                OrderStatus.Delivered => "bg-success",
+                OrderStatus.Cancelled => "bg-danger",
+                OrderStatus.Returned => "bg-secondary",
+                _ => "bg-secondary"
+            })">@Model.Status</span>
+        </div>
+
+        <div class="order-timeline">
+            @{
+                var timelineSteps = new[]
+                {
+                    (name: "Order Placed", date: Model.CreatedAt, done: true),
+                    (name: "Confirmed", date: Model.ConfirmedAt, done: Model.ConfirmedAt.HasValue),
+                    (name: "Shipped", date: Model.ShippedAt, done: Model.ShippedAt.HasValue),
+                    (name: "Delivered", date: Model.DeliveredAt, done: Model.DeliveredAt.HasValue)
+                };
+            }
+            <div class="d-flex justify-content-between">
+                @foreach (var step in timelineSteps)
+                {
+                    <div class="text-center @(step.done ? "" : "text-muted")">
+                        <div class="timeline-dot @(step.done ? "bg-success" : "bg-secondary") rounded-circle mx-auto mb-1" style="width:14px;height:14px;"></div>
+                        <small>@step.name</small><br />
+                        @if (step.date != default)
+                        {
+                            <small class="text-muted">@step.date.ToString("MMM dd")</small>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Order Items -->
+        <div class="col-lg-8">
+            <div class="content-section">
+                <h5 class="fw-bold mb-3">Items Ordered</h5>
+                @foreach (var item in Model.Items)
+                {
+                    <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                        <img src="https://via.placeholder.com/80x80" class="rounded me-3" style="width:80px;height:80px;object-fit:cover;">
+                        <div class="flex-grow-1">
+                            <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.ProductId" class="product-title text-decoration-none">@item.Product?.Name</a>
+                            <div class="small text-muted">Qty: @item.Quantity</div>
+                            <div class="fw-bold product-price mt-1">$@item.TotalPrice.ToString("N2")</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="cart-sidebar mb-3">
+                <h6 class="fw-bold mb-3">Order Summary</h6>
+                <table class="table table-borderless small">
+                    <tr><td class="text-muted">Subtotal:</td><td class="text-end">$@Model.SubTotal.ToString("N2")</td></tr>
+                    <tr><td class="text-muted">Shipping:</td><td class="text-end">$@Model.ShippingCharge.ToString("N2")</td></tr>
+                    <tr><td class="text-muted">Tax:</td><td class="text-end">$@Model.TaxAmount.ToString("N2")</td></tr>
+                    @if (Model.DiscountAmount > 0)
+                    {
+                        <tr><td class="text-muted">Discount:</td><td class="text-end text-success">-$@Model.DiscountAmount.ToString("N2")</td></tr>
+                    }
+                    <tr class="fw-bold"><td>Total:</td><td class="text-end product-price">$@Model.GrandTotal.ToString("N2")</td></tr>
+                </table>
+            </div>
+
+            <div class="cart-sidebar">
+                <h6 class="fw-bold mb-3">Shipping Address</h6>
+                @if (Model.ShippingAddress != null)
+                {
+                    <small>
+                        @Model.ShippingAddress.FullName<br />
+                        @Model.ShippingAddress.AddressLine1<br />
+                        @Model.ShippingAddress.City, @Model.ShippingAddress.State @Model.ShippingAddress.ZipCode<br />
+                        Phone: @Model.ShippingAddress.PhoneNumber
+                    </small>
+                }
+            </div>
+
+            @if (Model.Status == OrderStatus.Pending || Model.Status == OrderStatus.Processing)
+            {
+                <form asp-action="Cancel" method="post" class="mt-3" onsubmit="return confirm('Cancel this order?')">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-outline-danger w-100">
+                        <i class="fas fa-times me-1"></i>Cancel Order
+                    </button>
+                </form>
+            }
+            @if (Model.Status == OrderStatus.Delivered)
+            {
+                <form asp-action="Return" method="post" class="mt-3" onsubmit="return confirm('Request a return?')">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-outline-warning w-100">
+                        <i class="fas fa-undo me-1"></i>Return
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

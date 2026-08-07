@@ -1,0 +1,161 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Slider -->
+<section class="hero-slider">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://via.placeholder.com/1920x400/232f3e/ffffff?text=Summer+Sale+Up+to+50%25+Off" class="d-block w-100" alt="Summer Sale">
+                <div class="carousel-caption">
+                    <h3>Summer Sale</h3>
+                    <p>Up to 50% off on electronics, clothing, and more!</p>
+                    <a asp-controller="Catalog" asp-action="Deals" class="btn btn-amazon">Shop Now</a>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://via.placeholder.com/1920x400/37475a/ffffff?text=New+Arrivals+2024" class="d-block w-100" alt="New Arrivals">
+                <div class="carousel-caption">
+                    <h3>New Arrivals</h3>
+                    <p>Check out the latest products across all categories</p>
+                    <a asp-controller="Catalog" asp-action="Index" class="btn btn-amazon">Explore</a>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://via.placeholder.com/1920x400/131921/ffffff?text=Free+Shipping+on+Orders+%2450%2B" class="d-block w-100" alt="Free Shipping">
+                <div class="carousel-caption">
+                    <h3>Free Shipping</h3>
+                    <p>On orders over $50. Limited time offer!</p>
+                    <a asp-controller="Home" asp-action="ShippingPolicy" class="btn btn-amazon">Learn More</a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</section>
+
+<div class="container-fluid px-4">
+    <!-- Offer Banner -->
+    <div class="banner-section">
+        <img src="https://via.placeholder.com/1200x250/232f3e/ffffff?text=Flash+Sale+-+Limited+Time+Offer" alt="Flash Sale">
+        <div class="banner-overlay">
+            <h3>Flash Sale</h3>
+            <p>Limited time deals you don't want to miss!</p>
+            <a asp-controller="Catalog" asp-action="Deals" class="btn btn-amazon">Shop Deals</a>
+        </div>
+    </div>
+
+    <!-- Featured Products -->
+    @if (Model.FeaturedProducts.Any())
+    {
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Featured Products</h2>
+                <a asp-controller="Catalog" asp-action="Index">See all &raquo;</a>
+            </div>
+            <div class="row g-3">
+                @foreach (var product in Model.FeaturedProducts.Take(8))
+                {
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <partial name="_ProductCard" model="product" />
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+    <!-- Best Sellers -->
+    @if (Model.BestSellers.Any())
+    {
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Best Sellers</h2>
+                <a asp-controller="Catalog" asp-action="BestSellers">See all &raquo;</a>
+            </div>
+            <div class="row g-3">
+                @foreach (var product in Model.BestSellers.Take(8))
+                {
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <partial name="_ProductCard" model="product" />
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+    <!-- Trending Products -->
+    @if (Model.TrendingProducts.Any())
+    {
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Trending Now</h2>
+                <a asp-controller="Catalog" asp-action="Index?sort=popularity">See all &raquo;</a>
+            </div>
+            <div class="row g-3">
+                @foreach (var product in Model.TrendingProducts.Take(8))
+                {
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <partial name="_ProductCard" model="product" />
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+    <!-- Top Brands -->
+    <section class="content-section">
+        <div class="section-header">
+            <h2>Top Brands</h2>
+        </div>
+        <div class="row g-3 text-center">
+            <div class="col-4 col-md-2">
+                <div class="p-3 border rounded bg-white">
+                    <i class="fab fa-apple fa-3x text-dark"></i>
+                    <p class="mt-2 mb-0 small">Apple</p>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="p-3 border rounded bg-white">
+                    <i class="fab fa-samsung fa-3x text-dark"></i>
+                    <p class="mt-2 mb-0 small">Samsung</p>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="p-3 border rounded bg-white">
+                    <i class="fab fa-microsoft fa-3x text-dark"></i>
+                    <p class="mt-2 mb-0 small">Microsoft</p>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="p-3 border rounded bg-white">
+                    <i class="fab fa-sony fa-3x text-dark"></i>
+                    <p class="mt-2 mb-0 small">Sony</p>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="p-3 border rounded bg-white">
+                    <i class="fab fa-nike fa-3x text-dark"></i>
+                    <p class="mt-2 mb-0 small">Nike</p>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="p-3 border rounded bg-white">
+                    <i class="fab fa-adidas fa-3x text-dark"></i>
+                    <p class="mt-2 mb-0 small">Adidas</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

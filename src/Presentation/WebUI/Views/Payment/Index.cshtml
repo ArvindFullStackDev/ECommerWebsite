@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<div class="container-fluid px-4 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="content-section">
+                <h4 class="fw-bold mb-4"><i class="fas fa-credit-card me-2"></i>Payment Options</h4>
+
+                <div class="nav flex-column nav-pills" role="tablist">
+                    <button class="nav-link active text-start d-flex align-items-center py-3" data-bs-toggle="pill" data-bs-target="#cod">
+                        <i class="fas fa-money-bill-wave fa-lg me-3"></i>
+                        <div>
+                            <strong>Cash on Delivery</strong>
+                            <div class="small text-muted">Pay when you receive</div>
+                        </div>
+                    </button>
+                    <button class="nav-link text-start d-flex align-items-center py-3" data-bs-toggle="pill" data-bs-target="#card">
+                        <i class="fas fa-credit-card fa-lg me-3"></i>
+                        <div>
+                            <strong>Credit/Debit Card</strong>
+                            <div class="small text-muted">Visa, Mastercard, Amex</div>
+                        </div>
+                    </button>
+                    <button class="nav-link text-start d-flex align-items-center py-3" data-bs-toggle="pill" data-bs-target="#upi">
+                        <i class="fas fa-mobile-alt fa-lg me-3"></i>
+                        <div>
+                            <strong>UPI</strong>
+                            <div class="small text-muted">Google Pay, PhonePe, Paytm</div>
+                        </div>
+                    </button>
+                    <button class="nav-link text-start d-flex align-items-center py-3" data-bs-toggle="pill" data-bs-target="#netbanking">
+                        <i class="fas fa-university fa-lg me-3"></i>
+                        <div>
+                            <strong>Net Banking</strong>
+                            <div class="small text-muted">All major banks</div>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="tab-content mt-4">
+                    <div class="tab-pane fade show active" id="cod">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-1"></i> Pay with cash when your order is delivered. No extra charges.
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="card">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Card Number</label>
+                                <input type="text" class="form-control" placeholder="1234 5678 9012 3456" />
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Expiry</label>
+                                    <input type="text" class="form-control" placeholder="MM/YY" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" class="form-control" placeholder="123" />
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Name on Card</label>
+                                <input type="text" class="form-control" placeholder="John Doe" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="upi">
+                        <div class="mb-3">
+                            <label class="form-label">UPI ID</label>
+                            <input type="text" class="form-control" placeholder="example@upi" />
+                        </div>
+                        <div class="text-center">
+                            <p class="text-muted small">Or scan QR code with any UPI app</p>
+                            <img src="https://via.placeholder.com/150x150" class="border p-2 rounded" />
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="netbanking">
+                        <div class="mb-3">
+                            <label class="form-label">Select Bank</label>
+                            <select class="form-select">
+                                <option>State Bank of India</option>
+                                <option>HDFC Bank</option>
+                                <option>ICICI Bank</option>
+                                <option>Axis Bank</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
