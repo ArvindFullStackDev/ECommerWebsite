@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces;
@@ -22,25 +23,8 @@ public class CheckoutController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var cart = await _unitOfWork.Repository<Cart>().GetQueryable()
-            .Include(c => c.Items).ThenInclude(i => i.Product).ThenInclude(p => p.Images)
-            .FirstOrDefaultAsync(c => c.UserId == _currentUser.UserId);
-
-        if (cart == null || !cart.Items.Any(i => !i.IsSavedForLater))
-            return RedirectToAction("Index", "Cart");
-
-        var addresses = await _unitOfWork.Repository<Address>().GetQueryable()
-            .Where(a => a.UserId == _currentUser.UserId)
-            .ToListAsync();
-
-        var model = new CheckoutViewModel
-        {
-            CartItems = cart.Items.Where(i => !i.IsSavedForLater).ToList(),
-            SubTotal = cart.Items.Where(i => !i.IsSavedForLater).Sum(i => i.UnitPrice * i.Quantity),
-            Addresses = addresses,
-            PaymentMethods = Enum.GetValues<PaymentMethod>().ToList()
-        };
-
+        var model = await BuildCheckoutViewModelAsync();
+        if (model == null) return RedirectToAction("Index", "Cart");
         return View(model);
     }
 
@@ -48,9 +32,49 @@ public class CheckoutController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> PlaceOrder(PlaceOrderModel model)
     {
-        if (!ModelState.IsValid) return RedirectToAction("Index");
+        if (model.PaymentMethod == 0 || !Enum.IsDefined(model.PaymentMethod))
+            ModelState.AddModelError(nameof(PlaceOrderModel.PaymentMethod), "Please select a payment method");
+        if (model.ShippingMethod == 0 || !Enum.IsDefined(model.ShippingMethod))
+            ModelState.AddModelError(nameof(PlaceOrderModel.ShippingMethod), "Please select a shipping method");
 
-        var cart = await _unitOfWork.Repository<Cart>().GetQueryable()
+        var addresses = await _unitOfWork.Repository<Address>().GetQueryable()
+            .Where(a => a.UserId == _currentUser.UserId)
+            .ToListAsync();
+
+        int? shippingAddressId = null;
+        if (model.ShippingAddressId > 0)
+        {
+            var existing = addresses.FirstOrDefault(a => a.Id == model.ShippingAddressId);
+            if (existing == null)
+                ModelState.AddModelError(nameof(PlaceOrderModel.ShippingAddressId), "Selected address is invalid");
+            else
+                shippingAddressId = existing.Id;
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(model.FullName))
+                ModelState.AddModelError(nameof(PlaceOrderModel.FullName), "Full name is required");
+            if (string.IsNullOrWhiteSpace(model.PhoneNumber))
+                ModelState.AddModelError(nameof(PlaceOrderModel.PhoneNumber), "Phone number is required");
+            if (string.IsNullOrWhiteSpace(model.AddressLine1))
+                ModelState.AddModelError(nameof(PlaceOrderModel.AddressLine1), "Address line 1 is required");
+            if (string.IsNullOrWhiteSpace(model.City))
+                ModelState.AddModelError(nameof(PlaceOrderModel.City), "City is required");
+            if (string.IsNullOrWhiteSpace(model.State))
+                ModelState.AddModelError(nameof(PlaceOrderModel.State), "State is required");
+            if (string.IsNullOrWhiteSpace(model.ZipCode))
+                ModelState.AddModelError(nameof(PlaceOrderModel.ZipCode), "Zip code is required");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await BuildCheckoutViewModelAsync();
+            if (viewModel == null) return RedirectToAction("Index", "Cart");
+            viewModel.Form = model;
+            return View("Index", viewModel);
+        }
+
+        var cart = await _unitOfWork.Repository<Domain.Entities.Cart>().GetQueryable()
             .Include(c => c.Items).ThenInclude(i => i.Product)
             .FirstOrDefaultAsync(c => c.UserId == _currentUser.UserId);
 
@@ -59,9 +83,34 @@ public class CheckoutController : Controller
 
         var activeItems = cart.Items.Where(i => !i.IsSavedForLater).ToList();
         var subTotal = activeItems.Sum(i => i.UnitPrice * i.Quantity);
-        var shippingCharge = subTotal >= 50 ? 0 : 5.99m;
+        var shippingCharge = model.ShippingMethod switch
+        {
+            ShippingMethod.Express => 1104.15m,
+            ShippingMethod.Overnight => 2124.15m,
+            _ => subTotal >= 4250 ? 0 : 509.15m
+        };
         var taxRate = 0.085m;
         var taxAmount = subTotal * taxRate;
+
+        if (shippingAddressId == null)
+        {
+            var newAddress = new Address
+            {
+                UserId = _currentUser.UserId!,
+                FullName = model.FullName!,
+                PhoneNumber = model.PhoneNumber!,
+                AddressLine1 = model.AddressLine1!,
+                AddressLine2 = model.AddressLine2,
+                City = model.City!,
+                State = model.State!,
+                ZipCode = model.ZipCode!,
+                Country = string.IsNullOrWhiteSpace(model.Country) ? "India" : model.Country!,
+                IsDefault = !addresses.Any()
+            };
+            _unitOfWork.Repository<Address>().AddAsync(newAddress);
+            await _unitOfWork.CompleteAsync();
+            shippingAddressId = newAddress.Id;
+        }
 
         var order = new Order
         {
@@ -76,7 +125,7 @@ public class CheckoutController : Controller
             PaymentMethod = model.PaymentMethod,
             PaymentStatus = PaymentStatus.Pending,
             ShippingMethod = model.ShippingMethod,
-            ShippingAddressId = model.ShippingAddressId
+            ShippingAddressId = shippingAddressId
         };
 
         foreach (var item in activeItems)
@@ -100,7 +149,7 @@ public class CheckoutController : Controller
             Amount = order.GrandTotal,
             PaymentMethod = model.PaymentMethod,
             Status = model.PaymentMethod == PaymentMethod.CashOnDelivery ? PaymentStatus.Pending : PaymentStatus.Processing,
-            Currency = "USD",
+            Currency = "INR",
             Order = order
         };
         await _unitOfWork.Repository<Payment>().AddAsync(payment);
@@ -108,6 +157,29 @@ public class CheckoutController : Controller
         await _unitOfWork.CompleteAsync();
 
         return RedirectToAction("Confirmation", new { id = order.Id });
+    }
+
+    private async Task<CheckoutViewModel?> BuildCheckoutViewModelAsync()
+    {
+        var cart = await _unitOfWork.Repository<Domain.Entities.Cart>().GetQueryable()
+            .Include(c => c.Items).ThenInclude(i => i.Product).ThenInclude(p => p.Images)
+            .FirstOrDefaultAsync(c => c.UserId == _currentUser.UserId);
+
+        if (cart == null || !cart.Items.Any(i => !i.IsSavedForLater))
+            return null;
+
+        var addresses = await _unitOfWork.Repository<Address>().GetQueryable()
+            .Where(a => a.UserId == _currentUser.UserId)
+            .ToListAsync();
+
+        return new CheckoutViewModel
+        {
+            CartItems = cart.Items.Where(i => !i.IsSavedForLater).ToList(),
+            SubTotal = cart.Items.Where(i => !i.IsSavedForLater).Sum(i => i.UnitPrice * i.Quantity),
+            Addresses = addresses,
+            PaymentMethods = Enum.GetValues<PaymentMethod>().ToList(),
+            Form = new PlaceOrderModel()
+        };
     }
 
     [HttpGet]
@@ -133,16 +205,25 @@ public class CheckoutViewModel
 {
     public List<CartItem> CartItems { get; set; } = new();
     public decimal SubTotal { get; set; }
-    public decimal ShippingCharge => SubTotal >= 50 ? 0 : 5.99m;
+    public decimal ShippingCharge => SubTotal >= 4250 ? 0 : 509.15m;
     public decimal TaxAmount => SubTotal * 0.085m;
     public decimal GrandTotal => SubTotal + TaxAmount + ShippingCharge;
     public List<Address> Addresses { get; set; } = new();
     public List<PaymentMethod> PaymentMethods { get; set; } = new();
+    public PlaceOrderModel Form { get; set; } = new();
 }
 
 public class PlaceOrderModel
 {
     public int ShippingAddressId { get; set; }
+    public string? FullName { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? AddressLine1 { get; set; }
+    public string? AddressLine2 { get; set; }
+    public string? City { get; set; }
+    public string? State { get; set; }
+    public string? ZipCode { get; set; }
+    public string? Country { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
-    public ShippingMethod ShippingMethod { get; set; } = ShippingMethod.Standard;
+    public ShippingMethod ShippingMethod { get; set; }
 }

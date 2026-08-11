@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Your Addresses";
+}
+
+<div class="container py-4" style="max-width: 900px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Account" asp-action="Profile">Your Account</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Your Addresses</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Your Addresses</h2>
+        <button type="button" class="btn btn-amazon"><i class="fas fa-plus me-1"></i> Add Address</button>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold">Home</h6>
+                    <p class="text-muted mb-2 small">Default shipping address</p>
+                    <address class="small mb-3">
+                        123 Main Street<br />
+                        New York, NY 10001<br />
+                        United States<br />
+                        Phone: (555) 123-4567
+                    </address>
+                    <button type="button" class="btn btn-sm btn-outline-amazon me-1">Edit</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger">Remove</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold">Work</h6>
+                    <p class="text-muted mb-2 small">Billing address</p>
+                    <address class="small mb-3">
+                        410 Terry Ave N<br />
+                        Seattle, WA 98109<br />
+                        United States<br />
+                        Phone: (555) 987-6543
+                    </address>
+                    <button type="button" class="btn btn-sm btn-outline-amazon me-1">Edit</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger">Remove</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

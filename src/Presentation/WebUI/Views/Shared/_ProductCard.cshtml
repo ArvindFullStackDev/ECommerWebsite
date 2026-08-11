@@ -1,7 +1,7 @@
 @model ProductDto
 <div class="card product-card shadow-sm">
     <a asp-controller="Catalog" asp-action="Details" asp-route-id="@Model.Id">
-        <img src="@(Model.PrimaryImageUrl ?? "https://via.placeholder.com/200x200/f3f3f3/333?text=Product")" class="card-img-top" alt="@Model.Name">
+        <img src="@(Model.PrimaryImageUrl ?? "/images/products/product.svg")" class="card-img-top" alt="@Model.Name">
     </a>
     <div class="card-body">
         <h5 class="card-title">
@@ -24,11 +24,11 @@
             </span>
         </div>
         <div class="product-price mb-2">
-            <span class="currency-symbol">$</span>
+            <span class="currency-symbol">₹</span>
             <span>@Model.DisplayPrice?.ToString("N2")</span>
             @if (Model.Savings > 0)
             {
-                <span class="original-price ms-2">$@Model.Price.ToString("N2")</span>
+                <span class="original-price ms-2">₹@Model.Price.ToString("N2")</span>
                 <span class="product-discount ms-2">-@Model.SavingsPercent%</span>
             }
         </div>

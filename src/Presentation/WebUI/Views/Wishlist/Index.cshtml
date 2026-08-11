@@ -33,23 +33,25 @@
                     <div class="col-6 col-md-3 col-lg-2">
                         <div class="card product-card shadow-sm">
                             <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.ProductId">
-                                <img src="@(item.Product.Images.FirstOrDefault()?.ImageUrl ?? "https://via.placeholder.com/200x200")" class="card-img-top" alt="@item.Product.Name">
+                                <img src="@(item.Product.Images.                                            FirstOrDefault()?.ImageUrl ?? "/images/products/product.svg")" class="card-img-top" alt="@item.Product.Name">
                             </a>
                             <div class="card-body">
                                 <h5 class="card-title">
                                     <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.ProductId">@item.Product.Name</a>
                                 </h5>
                                 <div class="product-price mb-2">
-                                    $@((item.Product.DiscountPrice ?? item.Product.Price).ToString("N2"))
+                                    ₹@((item.Product.DiscountPrice ?? item.Product.Price).ToString("N2"))
                                 </div>
                                 <button class="btn btn-amazon btn-sm w-100 mb-1 add-to-cart" data-product-id="@item.ProductId">
                                     <i class="fas fa-shopping-cart me-1"></i>Add to Cart
                                 </button>
-                                <a asp-controller="Wishlist" asp-action="RemoveFromWishlist" asp-route-id="@item.Id"
-                                   class="btn btn-outline-danger btn-sm w-100"
-                                   onclick="return confirm('Remove from wishlist?')">
-                                    <i class="fas fa-trash me-1"></i>Remove
-                                </a>
+                                <form asp-controller="Wishlist" asp-action="RemoveFromWishlist" method="post"
+                                      onsubmit="return confirm('Remove from wishlist?')" class="d-grid">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                        <i class="fas fa-trash me-1"></i>Remove
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

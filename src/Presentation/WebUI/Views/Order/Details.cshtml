@@ -1,4 +1,5 @@
 @model Order
+@using Domain.Enums
 @{
     ViewData["Title"] = "Order Details";
 }
@@ -31,29 +32,46 @@
             })">@Model.Status</span>
         </div>
 
-        <div class="order-timeline">
+        <div class="order-progress">
             @{
+                var s = Model.Status;
+                var confirmedDone = Model.ConfirmedAt.HasValue ||
+                    s is OrderStatus.Confirmed or OrderStatus.Processing or OrderStatus.Packed or OrderStatus.Shipped
+                        or OrderStatus.OutForDelivery or OrderStatus.Delivered;
+                var shippedDone = Model.ShippedAt.HasValue ||
+                    s is OrderStatus.Shipped or OrderStatus.OutForDelivery or OrderStatus.Delivered;
+                var deliveredDone = Model.DeliveredAt.HasValue || s == OrderStatus.Delivered;
+
                 var timelineSteps = new[]
                 {
-                    (name: "Order Placed", date: Model.CreatedAt, done: true),
-                    (name: "Confirmed", date: Model.ConfirmedAt, done: Model.ConfirmedAt.HasValue),
-                    (name: "Shipped", date: Model.ShippedAt, done: Model.ShippedAt.HasValue),
-                    (name: "Delivered", date: Model.DeliveredAt, done: Model.DeliveredAt.HasValue)
+                    (name: "Order Placed", date: (DateTime?)Model.CreatedAt, done: true),
+                    (name: "Confirmed", date: (DateTime?)Model.ConfirmedAt, done: confirmedDone),
+                    (name: "Shipped", date: (DateTime?)Model.ShippedAt, done: shippedDone),
+                    (name: "Delivered", date: (DateTime?)Model.DeliveredAt, done: deliveredDone)
                 };
             }
-            <div class="d-flex justify-content-between">
-                @foreach (var step in timelineSteps)
-                {
-                    <div class="text-center @(step.done ? "" : "text-muted")">
-                        <div class="timeline-dot @(step.done ? "bg-success" : "bg-secondary") rounded-circle mx-auto mb-1" style="width:14px;height:14px;"></div>
-                        <small>@step.name</small><br />
-                        @if (step.date != default)
+            @for (int i = 0; i < timelineSteps.Length; i++)
+            {
+                var step = timelineSteps[i];
+                <div class="order-step @(step.done ? "done" : "")">
+                    <div class="order-step-dot">
+                        @if (step.done)
                         {
-                            <small class="text-muted">@step.date.ToString("MMM dd")</small>
+                            <i class="fas fa-check"></i>
                         }
                     </div>
+                    <small class="d-block">@step.name</small>
+                    @if (step.date.HasValue)
+                    {
+                        <small class="text-muted d-block">@step.date.Value.ToString("MMM dd")</small>
+                    }
+                </div>
+                if (i < timelineSteps.Length - 1)
+                {
+                    var nextDone = timelineSteps[i + 1].done;
+                    <div class="order-step-line @(nextDone ? "done" : "")"></div>
                 }
-            </div>
+            }
         </div>
     </div>
 
@@ -65,11 +83,11 @@
                 @foreach (var item in Model.Items)
                 {
                     <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                        <img src="https://via.placeholder.com/80x80" class="rounded me-3" style="width:80px;height:80px;object-fit:cover;">
+                                              <img src="/images/products/product-small.svg" class="rounded me-3" style="width:80px;height:80px;object-fit:cover;">
                         <div class="flex-grow-1">
                             <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.ProductId" class="product-title text-decoration-none">@item.Product?.Name</a>
                             <div class="small text-muted">Qty: @item.Quantity</div>
-                            <div class="fw-bold product-price mt-1">$@item.TotalPrice.ToString("N2")</div>
+                            <div class="fw-bold product-price mt-1">₹@item.TotalPrice.ToString("N2")</div>
                         </div>
                     </div>
                 }
@@ -81,14 +99,14 @@
             <div class="cart-sidebar mb-3">
                 <h6 class="fw-bold mb-3">Order Summary</h6>
                 <table class="table table-borderless small">
-                    <tr><td class="text-muted">Subtotal:</td><td class="text-end">$@Model.SubTotal.ToString("N2")</td></tr>
-                    <tr><td class="text-muted">Shipping:</td><td class="text-end">$@Model.ShippingCharge.ToString("N2")</td></tr>
-                    <tr><td class="text-muted">Tax:</td><td class="text-end">$@Model.TaxAmount.ToString("N2")</td></tr>
+                    <tr><td class="text-muted">Subtotal:</td><td class="text-end">₹@Model.SubTotal.ToString("N2")</td></tr>
+                    <tr><td class="text-muted">Shipping:</td><td class="text-end">₹@Model.ShippingCharge.ToString("N2")</td></tr>
+                    <tr><td class="text-muted">Tax:</td><td class="text-end">₹@Model.TaxAmount.ToString("N2")</td></tr>
                     @if (Model.DiscountAmount > 0)
                     {
-                        <tr><td class="text-muted">Discount:</td><td class="text-end text-success">-$@Model.DiscountAmount.ToString("N2")</td></tr>
+                        <tr><td class="text-muted">Discount:</td><td class="text-end text-success">-₹@Model.DiscountAmount.ToString("N2")</td></tr>
                     }
-                    <tr class="fw-bold"><td>Total:</td><td class="text-end product-price">$@Model.GrandTotal.ToString("N2")</td></tr>
+                    <tr class="fw-bold"><td>Total:</td><td class="text-end product-price">₹@Model.GrandTotal.ToString("N2")</td></tr>
                 </table>
             </div>
 

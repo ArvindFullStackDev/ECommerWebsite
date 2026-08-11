@@ -9,3 +9,4 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Shared\obj\Debug\net10.0\Shared.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Shared\obj\Debug\net10.0\refint\Shared.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Shared\obj\Debug\net10.0\Shared.pdb
 E:\New folder (3)\Learn\ECommerceWebsite\src\Shared\obj\Debug\net10.0\ref\Shared.dll
+E:\New folder (3)\Learn\ECommerceWebsite\src\Shared\obj\Debug\net10.0\Shared.sourcelink.json

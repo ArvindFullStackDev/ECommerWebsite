@@ -13,27 +13,25 @@ public class AddStockCommandHandler : IRequestHandler<AddStockCommand, bool>
     public AddStockCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<bool> Handle(AddStockCommand request, CancellationToken ct)
     {
-        var inventory = await _unitOfWork.Repository<Inventory>().GetQueryable()
+        var inventoryRepo = _unitOfWork.Repository<Domain.Entities.Inventory>();
+        var inventory = await inventoryRepo.GetQueryable()
             .FirstOrDefaultAsync(i => i.ProductId == request.ProductId, ct);
         if (inventory == null)
         {
-            inventory = new Inventory { ProductId = request.ProductId, QuantityInStock = request.Quantity };
-            await _unitOfWork.Repository<Inventory>().AddAsync(inventory, ct);
+            inventory = new Domain.Entities.Inventory { ProductId = request.ProductId, Quantity = request.Quantity };
+            await inventoryRepo.AddAsync(inventory);
         }
         else
         {
-            inventory.QuantityInStock += request.Quantity;
-            inventory.LastRestockedAt = DateTime.UtcNow;
+            inventory.Quantity += request.Quantity;
         }
 
-        var history = new StockHistory
+        await _unitOfWork.Repository<StockHistory>().AddAsync(new StockHistory
         {
-            ProductId = request.ProductId, ChangeType = "Added",
-            QuantityChanged = request.Quantity, NewQuantity = inventory.QuantityInStock,
-            Notes = request.Notes
-        };
-        await _unitOfWork.Repository<StockHistory>().AddAsync(history, ct);
-        await _unitOfWork.CompleteAsync(ct);
+            InventoryId = inventory.Id, QuantityChange = request.Quantity,
+            NewStock = inventory.Quantity, Notes = request.Notes
+        });
+        await _unitOfWork.CompleteAsync();
         return true;
     }
 }

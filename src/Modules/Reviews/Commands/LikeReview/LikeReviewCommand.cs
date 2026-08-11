@@ -20,8 +20,8 @@ public class LikeReviewCommandHandler : IRequestHandler<LikeReviewCommand, bool>
         await _unitOfWork.Repository<ReviewLike>().AddAsync(new ReviewLike
         {
             ReviewId = request.ReviewId, UserId = request.UserId
-        }, ct);
-        await _unitOfWork.CompleteAsync(ct);
+        });
+        await _unitOfWork.CompleteAsync();
         return true;
     }
 }

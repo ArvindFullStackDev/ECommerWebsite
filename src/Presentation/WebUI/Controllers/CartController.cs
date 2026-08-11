@@ -22,7 +22,7 @@ public class CartController : Controller
         if (!_currentUser.IsAuthenticated)
             return RedirectToAction("Login", "Account");
 
-        var cart = await _unitOfWork.Repository<Cart>().GetQueryable()
+        var cart = await _unitOfWork.Repository<Domain.Entities.Cart>().GetQueryable()
             .Include(c => c.Items)
                 .ThenInclude(i => i.Product)
                     .ThenInclude(p => p.Images)
@@ -30,8 +30,8 @@ public class CartController : Controller
 
         if (cart == null)
         {
-            cart = new Cart { UserId = _currentUser.UserId! };
-            await _unitOfWork.Repository<Cart>().AddAsync(cart);
+            cart = new Domain.Entities.Cart { UserId = _currentUser.UserId! };
+            await _unitOfWork.Repository<Domain.Entities.Cart>().AddAsync(cart);
             await _unitOfWork.CompleteAsync();
         }
 
@@ -44,17 +44,17 @@ public class CartController : Controller
         if (!_currentUser.IsAuthenticated)
             return Json(new { success = false, message = "Please login to add items to cart" });
 
-        var cart = await _unitOfWork.Repository<Cart>().GetQueryable()
+        var cart = await _unitOfWork.Repository<Domain.Entities.Cart>().GetQueryable()
             .Include(c => c.Items)
             .FirstOrDefaultAsync(c => c.UserId == _currentUser.UserId);
 
         if (cart == null)
         {
-            cart = new Cart { UserId = _currentUser.UserId! };
-            await _unitOfWork.Repository<Cart>().AddAsync(cart);
+            cart = new Domain.Entities.Cart { UserId = _currentUser.UserId! };
+            await _unitOfWork.Repository<Domain.Entities.Cart>().AddAsync(cart);
         }
 
-        var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == productId);
+        var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == productId && !i.IsSavedForLater);
         if (existingItem != null)
         {
             existingItem.Quantity += quantity;
@@ -124,5 +124,19 @@ public class CartController : Controller
         await _unitOfWork.CompleteAsync();
 
         return Json(new { success = true });
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> MoveToCart(int cartItemId)
+    {
+        var cartItem = await _unitOfWork.Repository<CartItem>().GetByIdAsync(cartItemId);
+        if (cartItem == null)
+            return Json(new { success = false, message = "Item not found" });
+
+        cartItem.IsSavedForLater = false;
+        _unitOfWork.Repository<CartItem>().Update(cartItem);
+        await _unitOfWork.CompleteAsync();
+
+        return Json(new { success = true, message = "Item moved to cart" });
     }
 }

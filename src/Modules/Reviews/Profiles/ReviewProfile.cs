@@ -1,4 +1,5 @@
 using AutoMapper;
+using Reviews.Commands.CreateReview;
 using Reviews.DTOs;
 
 namespace Reviews.Profiles;

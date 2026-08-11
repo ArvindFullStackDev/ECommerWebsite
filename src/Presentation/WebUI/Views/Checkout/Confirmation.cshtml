@@ -22,10 +22,10 @@
             </div>
             <div class="col-md-6">
                 <table class="table table-borderless small">
-                    <tr><td class="text-muted">Subtotal:</td><td>$@Model.SubTotal.ToString("N2")</td></tr>
-                    <tr><td class="text-muted">Shipping:</td><td>$@Model.ShippingCharge.ToString("N2")</td></tr>
-                    <tr><td class="text-muted">Tax:</td><td>$@Model.TaxAmount.ToString("N2")</td></tr>
-                    <tr><td class="fw-bold">Total:</td><td class="fw-bold product-price">$@Model.GrandTotal.ToString("N2")</td></tr>
+                    <tr><td class="text-muted">Subtotal:</td><td>₹@Model.SubTotal.ToString("N2")</td></tr>
+                    <tr><td class="text-muted">Shipping:</td><td>₹@Model.ShippingCharge.ToString("N2")</td></tr>
+                    <tr><td class="text-muted">Tax:</td><td>₹@Model.TaxAmount.ToString("N2")</td></tr>
+                    <tr><td class="fw-bold">Total:</td><td class="fw-bold product-price">₹@Model.GrandTotal.ToString("N2")</td></tr>
                 </table>
             </div>
         </div>
@@ -38,7 +38,7 @@
             {
                 <div class="d-flex align-items-center mb-2">
                     <div class="flex-grow-1">@item.Product.Name <span class="text-muted">x @item.Quantity</span></div>
-                    <span>$@item.TotalPrice.ToString("N2")</span>
+                    <span>₹@item.TotalPrice.ToString("N2")</span>
                 </div>
             }
         }

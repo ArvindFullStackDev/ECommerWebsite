@@ -51,6 +51,22 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                var method = typeof(ApplicationDbContext)
+                    .GetMethod(nameof(SetSoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static)!
+                    .MakeGenericMethod(entityType.ClrType);
+                method.Invoke(null, new object[] { modelBuilder });
+            }
+        }
+    }
+
+    private static void SetSoftDeleteFilter<T>(ModelBuilder modelBuilder) where T : BaseEntity
+    {
+        modelBuilder.Entity<T>().HasQueryFilter(e => !e.IsDeleted);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

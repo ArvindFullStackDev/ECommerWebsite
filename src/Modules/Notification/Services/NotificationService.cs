@@ -1,4 +1,3 @@
-using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +16,8 @@ public class NotificationService : INotificationService
         var notification = new Domain.Entities.Notification
         {
             UserId = userId, Title = title, Message = message,
-            Type = Enum.TryParse<NotificationType>(type, out var nt) ? nt : NotificationType.Info,
-            ReferenceId = referenceId
+            Type = Enum.TryParse<NotificationType>(type, out var nt) ? nt : NotificationType.InApp,
+            Link = referenceId
         };
         await _unitOfWork.Repository<Domain.Entities.Notification>().AddAsync(notification);
         await _unitOfWork.CompleteAsync();
@@ -46,7 +45,7 @@ public class NotificationService : INotificationService
             .Select(n => new NotificationDto
             {
                 Id = n.Id, UserId = n.UserId, Title = n.Title, Message = n.Message,
-                Type = n.Type.ToString(), IsRead = n.IsRead, ReferenceId = n.ReferenceId, CreatedAt = n.CreatedAt
+                Type = n.Type.ToString(), IsRead = n.IsRead, ReferenceId = n.Link, CreatedAt = n.CreatedAt
             }).ToListAsync();
     }
 

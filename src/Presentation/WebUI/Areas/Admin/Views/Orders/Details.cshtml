@@ -1,0 +1,88 @@
+@model Order
+@{
+    ViewData["Title"] = "Order " + Model.OrderNumber;
+    var customerEmail = (string?)ViewBag.CustomerEmail;
+    var statuses = Enum.GetValues<OrderStatus>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Order @Model.OrderNumber</h4>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Back</a>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-3">
+        <div class="content-section h-100">
+            <h6 class="text-muted">Customer</h6>
+            <div class="fw-bold">@customerEmail</div>
+            <small class="text-muted">@Model.UserId</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="content-section h-100">
+            <h6 class="text-muted">Status</h6>
+            <span class="badge @(Model.Status == OrderStatus.Cancelled ? "bg-danger" : Model.Status == OrderStatus.Delivered ? "bg-success" : "bg-warning text-dark") fs-6">@Model.Status</span>
+            <div class="mt-2">
+                <form asp-action="UpdateStatus" method="post" class="d-flex gap-2">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <select name="status" class="form-select form-select-sm" asp-items="new SelectList(statuses, Model.Status)"></select>
+                    <button type="submit" class="btn btn-sm btn-amazon">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="content-section h-100">
+            <h6 class="text-muted">Payment</h6>
+            <div>@Model.PaymentMethod</div>
+            <span class="badge bg-secondary">@Model.PaymentStatus</span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="content-section h-100">
+            <h6 class="text-muted">Shipping</h6>
+            <div>@Model.ShippingMethod</div>
+            <small class="text-muted">
+                @(Model.ShippingAddress != null
+                    ? $"{Model.ShippingAddress.AddressLine1}, {Model.ShippingAddress.City}, {Model.ShippingAddress.State} {Model.ShippingAddress.ZipCode}"
+                    : "No address on file")
+            </small>
+        </div>
+    </div>
+</div>
+
+<div class="content-section p-0 mb-3">
+    <div class="table-responsive">
+        <table class="table table-striped mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Product</th>
+                    <th class="text-end">Unit Price</th>
+                    <th class="text-end">Qty</th>
+                    <th class="text-end">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Product?.Name</td>
+                        <td class="text-end">₹@item.UnitPrice.ToString("N2")</td>
+                        <td class="text-end">@item.Quantity</td>
+                        <td class="text-end">₹@item.TotalPrice.ToString("N2")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr><td colspan="3" class="text-end text-muted">Subtotal:</td><td class="text-end">₹@Model.SubTotal.ToString("N2")</td></tr>
+                <tr><td colspan="3" class="text-end text-muted">Shipping:</td><td class="text-end">₹@Model.ShippingCharge.ToString("N2")</td></tr>
+                <tr><td colspan="3" class="text-end text-muted">Tax:</td><td class="text-end">₹@Model.TaxAmount.ToString("N2")</td></tr>
+                @if (Model.DiscountAmount > 0)
+                {
+                    <tr><td colspan="3" class="text-end text-muted">Discount:</td><td class="text-end text-success">-₹@Model.DiscountAmount.ToString("N2")</td></tr>
+                }
+                <tr class="fw-bold"><td colspan="3" class="text-end">Grand Total:</td><td class="text-end">₹@Model.GrandTotal.ToString("N2")</td></tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

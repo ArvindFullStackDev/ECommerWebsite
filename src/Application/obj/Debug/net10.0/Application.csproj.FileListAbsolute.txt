@@ -15,3 +15,4 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Application\obj\Debug\net10.0\Appli
 E:\New folder (3)\Learn\ECommerceWebsite\src\Application\obj\Debug\net10.0\refint\Application.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Application\obj\Debug\net10.0\Application.pdb
 E:\New folder (3)\Learn\ECommerceWebsite\src\Application\obj\Debug\net10.0\ref\Application.dll
+E:\New folder (3)\Learn\ECommerceWebsite\src\Application\obj\Debug\net10.0\Application.sourcelink.json

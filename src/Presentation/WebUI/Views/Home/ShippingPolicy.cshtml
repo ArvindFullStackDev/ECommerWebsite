@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Shipping Policy";
+}
+
+<div class="container py-4" style="max-width: 850px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Shipping Policy</li>
+        </ol>
+    </nav>
+
+    <h2>Shipping Policy</h2>
+    <p class="text-muted">Last updated: @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+
+    <h5>Shipping Options</h5>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Method</th>
+                    <th>Delivery Time</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Standard Shipping</td>
+                    <td>3-5 business days</td>
+                    <td>Free on orders ₹4,250+</td>
+                </tr>
+                <tr>
+                    <td>Express Shipping</td>
+                    <td>1-2 business days</td>
+                    <td>₹1,104.15</td>
+                </tr>
+                <tr>
+                    <td>Same-Day Delivery</td>
+                    <td>Same day (order before 12 PM)</td>
+                    <td>₹1,699.15</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h5>Order Tracking</h5>
+    <p>Once your order ships, you'll receive a tracking number via email. You can also track it from <a asp-controller="Order" asp-action="Index">Your Orders</a>.</p>
+
+    <h5>International Shipping</h5>
+    <p>We currently ship to the United States and Canada. International shipping rates are calculated at checkout.</p>
+</div>

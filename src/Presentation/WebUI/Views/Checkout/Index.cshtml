@@ -1,4 +1,4 @@
-@model CheckoutViewModel
+﻿@model CheckoutViewModel
 @{
     ViewData["Title"] = "Checkout";
 }
@@ -12,6 +12,8 @@
         </ol>
     </nav>
 
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
     <form asp-action="PlaceOrder" method="post" id="checkoutForm">
         <div class="row g-4">
             <!-- Left: Address & Payment -->
@@ -21,14 +23,14 @@
                     <h5 class="fw-bold mb-3">1. Shipping Address</h5>
                     @if (Model.Addresses.Any())
                     {
-                        <div class="row g-2">
+                        <div class="row g-2 mb-3">
                             @foreach (var addr in Model.Addresses)
                             {
                                 <div class="col-md-6">
                                     <div class="border rounded p-3 @(addr.IsDefault ? "border-primary" : "")">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="ShippingAddressId" value="@addr.Id"
-                                                   @(addr.IsDefault ? "checked" : "") required>
+                                                   @(addr.IsDefault ? "checked" : "")>
                                             <label class="form-check-label">
                                                 <strong>@addr.FullName</strong><br />
                                                 <span class="small">@addr.AddressLine1, @addr.City, @addr.State @addr.ZipCode</span><br />
@@ -39,11 +41,44 @@
                                 </div>
                             }
                         </div>
+                        <hr />
+                        <div class="small text-muted mb-2" id="newAddressHint">Or enter a new address below:</div>
                     }
-                    else
-                    {
-                        <p class="text-muted">No addresses found. <a asp-controller="Account" asp-action="Addresses">Add an address</a></p>
-                    }
+
+                    <div class="row g-2" id="newAddressFields">
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name *</label>
+                            <input name="FullName" class="form-control" value="@(Model.Form.FullName)" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number *</label>
+                            <input name="PhoneNumber" class="form-control" value="@(Model.Form.PhoneNumber)" />
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Address Line 1 *</label>
+                            <input name="AddressLine1" class="form-control" value="@(Model.Form.AddressLine1)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Address Line 2</label>
+                            <input name="AddressLine2" class="form-control" value="@(Model.Form.AddressLine2)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">City *</label>
+                            <input name="City" class="form-control" value="@(Model.Form.City)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">State *</label>
+                            <input name="State" class="form-control" value="@(Model.Form.State)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Zip Code *</label>
+                            <input name="ZipCode" class="form-control" value="@(Model.Form.ZipCode)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Country</label>
+                            <input name="Country" class="form-control" value="@(Model.Form.Country ?? "India")" />
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Shipping Method -->
@@ -53,23 +88,11 @@
                         <div class="col-md-4">
                             <div class="border rounded p-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="ShippingMethod" value="0" checked>
+                                    <input class="form-check-input" type="radio" name="ShippingMethod" value="1" checked>
                                     <label class="form-check-label">
                                         <strong>Standard</strong><br />
                                         <span class="small text-muted">5-7 business days</span><br />
-                                        <span class="small">@(Model.SubTotal >= 50 ? "FREE" : "$5.99")</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border rounded p-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="ShippingMethod" value="1">
-                                    <label class="form-check-label">
-                                        <strong>Express</strong><br />
-                                        <span class="small text-muted">2-3 business days</span><br />
-                                        <span class="small">$12.99</span>
+                                        <span class="small">@(Model.SubTotal >= 4250 ? "FREE" : "₹509.15")</span>
                                     </label>
                                 </div>
                             </div>
@@ -79,9 +102,21 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="ShippingMethod" value="2">
                                     <label class="form-check-label">
+                                        <strong>Express</strong><br />
+                                        <span class="small text-muted">2-3 business days</span><br />
+                                        <span class="small">₹1,104.15</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border rounded p-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ShippingMethod" value="3">
+                                    <label class="form-check-label">
                                         <strong>Overnight</strong><br />
                                         <span class="small text-muted">Next business day</span><br />
-                                        <span class="small">$24.99</span>
+                                        <span class="small">₹2,124.15</span>
                                     </label>
                                 </div>
                             </div>
@@ -93,7 +128,7 @@
                 <div class="content-section">
                     <h5 class="fw-bold mb-3">3. Payment Method</h5>
                     <div class="row g-2">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="border rounded p-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="PaymentMethod" value="1" checked>
@@ -104,7 +139,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="border rounded p-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="PaymentMethod" value="2">
@@ -115,13 +150,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="border rounded p-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="PaymentMethod" value="4">
+                                    <input class="form-check-input" type="radio" name="PaymentMethod" value="5">
                                     <label class="form-check-label">
                                         <i class="fas fa-mobile-alt me-1"></i>
                                         <strong>UPI</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border rounded p-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="PaymentMethod" value="6">
+                                    <label class="form-check-label">
+                                        <i class="fas fa-university me-1"></i>
+                                        <strong>Net Banking</strong>
                                     </label>
                                 </div>
                             </div>
@@ -132,39 +178,39 @@
 
             <!-- Right: Order Summary -->
             <div class="col-lg-4">
-                <div class="cart-sidebar">
+                <div class="cart-sidebar" data-subtotal="@Model.SubTotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
                     <h5 class="fw-bold mb-3">Order Summary</h5>
 
                     <div class="mb-3">
                         @foreach (var item in Model.CartItems)
                         {
                             <div class="d-flex align-items-center mb-2">
-                                <img src="https://via.placeholder.com/40x40" class="rounded me-2" style="width:40px;height:40px;object-fit:cover;">
+                                <img src="/images/products/product-small.svg" class="rounded me-2" style="width:40px;height:40px;object-fit:cover;">
                                 <div class="flex-grow-1 small">
                                     <span class="d-block text-truncate" style="max-width:180px;">@item.Product.Name</span>
                                     <span class="text-muted">Qty: @item.Quantity</span>
                                 </div>
-                                <span class="small">$@((item.UnitPrice * item.Quantity).ToString("N2"))</span>
+                                <span class="small">₹@((item.UnitPrice * item.Quantity).ToString("N2"))</span>
                             </div>
                         }
                     </div>
                     <hr />
                     <div class="d-flex justify-content-between mb-1 small">
                         <span class="text-muted">Subtotal:</span>
-                        <span>$@Model.SubTotal.ToString("N2")</span>
+                        <span>₹@Model.SubTotal.ToString("N2")</span>
                     </div>
                     <div class="d-flex justify-content-between mb-1 small">
                         <span class="text-muted">Shipping:</span>
-                        <span>@(Model.ShippingCharge == 0 ? "FREE" : "$" + Model.ShippingCharge.ToString("N2"))</span>
+                        <span id="summaryShipping">@(Model.ShippingCharge == 0 ? "FREE" : "₹" + Model.ShippingCharge.ToString("N2"))</span>
                     </div>
                     <div class="d-flex justify-content-between mb-1 small">
                         <span class="text-muted">Tax:</span>
-                        <span>$@Model.TaxAmount.ToString("N2")</span>
+                        <span id="summaryTax">₹@Model.TaxAmount.ToString("N2")</span>
                     </div>
                     <hr />
                     <div class="d-flex justify-content-between mb-3">
                         <strong>Total:</strong>
-                        <strong class="product-price">$@Model.GrandTotal.ToString("N2")</strong>
+                        <strong class="product-price" id="summaryTotal">₹@Model.GrandTotal.ToString("N2")</strong>
                     </div>
 
                     <button type="submit" class="btn btn-amazon btn-lg w-100" id="placeOrderBtn">
@@ -178,3 +224,59 @@
         </div>
     </form>
 </div>
+
+<script>
+    (function () {
+        var summary = document.querySelector('.cart-sidebar');
+        var subtotal = parseFloat(summary.getAttribute('data-subtotal')) || 0;
+        var freeThreshold = 4250;
+        var rates = {
+            '1': { amount: 509.15, free: true },
+            '2': { amount: 1104.15, free: false },
+            '3': { amount: 2124.15, free: false }
+        };
+        var taxRate = 0.085;
+
+        function fmt(n) {
+            return '\u20B9' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function update() {
+            var selected = document.querySelector('input[name="ShippingMethod"]:checked');
+            if (!selected) return;
+            var rate = rates[selected.value];
+            if (!rate) return;
+            var shipping = rate.free && subtotal >= freeThreshold ? 0 : rate.amount;
+            var tax = subtotal * taxRate;
+            var total = subtotal + tax + shipping;
+            document.getElementById('summaryShipping').textContent =
+                rate.free && shipping === 0 ? 'FREE' : fmt(shipping);
+            document.getElementById('summaryTax').textContent = fmt(tax);
+            document.getElementById('summaryTotal').textContent = fmt(total);
+        }
+
+        document.querySelectorAll('input[name="ShippingMethod"]').forEach(function (radio) {
+            radio.addEventListener('change', update);
+        });
+        update();
+
+        var newAddressFields = document.getElementById('newAddressFields');
+        var addressRadios = document.querySelectorAll('input[name="ShippingAddressId"]');
+        function syncAddressFields() {
+            var usingSaved = document.querySelector('input[name="ShippingAddressId"]:checked');
+            newAddressFields.querySelectorAll('input').forEach(function (input) {
+                input.disabled = !!usingSaved;
+                input.classList.toggle('disabled', !!usingSaved);
+            });
+            if (usingSaved) {
+                document.getElementById('newAddressHint').style.display = 'none';
+            } else {
+                document.getElementById('newAddressHint').style.display = '';
+            }
+        }
+        addressRadios.forEach(function (radio) {
+            radio.addEventListener('change', syncAddressFields);
+        });
+        if (addressRadios.length) syncAddressFields();
+    })();
+</script>

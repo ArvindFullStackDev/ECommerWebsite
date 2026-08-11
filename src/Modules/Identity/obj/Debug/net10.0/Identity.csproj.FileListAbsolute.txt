@@ -17,3 +17,4 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Identity\obj\Debug\net10.0\
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Identity\obj\Debug\net10.0\refint\Identity.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Identity\obj\Debug\net10.0\Identity.pdb
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Identity\obj\Debug\net10.0\ref\Identity.dll
+E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Identity\obj\Debug\net10.0\Identity.sourcelink.json

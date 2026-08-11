@@ -1,4 +1,3 @@
-using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +13,15 @@ public class GetLowStockProductsQueryHandler : IRequestHandler<GetLowStockProduc
     public GetLowStockProductsQueryHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<List<StockDto>> Handle(GetLowStockProductsQuery request, CancellationToken ct)
     {
-        return await _unitOfWork.Repository<Inventory>().GetQueryable()
+        return await _unitOfWork.Repository<Domain.Entities.Inventory>().GetQueryable()
             .Include(i => i.Product)
-            .Where(i => (i.QuantityInStock - i.ReservedQuantity) <= request.Threshold)
+            .Where(i => (i.Quantity - i.ReservedQuantity) <= request.Threshold)
             .Select(i => new StockDto
             {
                 ProductId = i.ProductId, ProductName = i.Product!.Name,
-                QuantityInStock = i.QuantityInStock, ReservedQuantity = i.ReservedQuantity,
-                LowStockThreshold = i.LowStockThreshold, LastRestockedAt = i.LastRestockedAt
+                QuantityInStock = i.Quantity, ReservedQuantity = i.ReservedQuantity,
+                LowStockThreshold = i.Product.LowStockThreshold ?? 5, LastRestockedAt = i.LastModifiedAt
             }).ToListAsync(ct);
     }
 }
+

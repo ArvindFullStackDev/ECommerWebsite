@@ -17,3 +17,4 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Admin\obj\Debug\net10.0\Adm
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Admin\obj\Debug\net10.0\refint\Admin.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Admin\obj\Debug\net10.0\Admin.pdb
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Admin\obj\Debug\net10.0\ref\Admin.dll
+E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Admin\obj\Debug\net10.0\Admin.sourcelink.json

@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Return Policy";
+}
+
+<div class="container py-4" style="max-width: 850px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Return Policy</li>
+        </ol>
+    </nav>
+
+    <h2>Return Policy</h2>
+    <p class="text-muted">Last updated: @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+
+    <h5>30-Day Returns</h5>
+    <p>You can return most items sold on ECommerce within 30 days of delivery for a full refund, provided the item is in its original condition and packaging.</p>
+
+    <h5>How to Return</h5>
+    <ul>
+        <li>Go to <a asp-controller="Order" asp-action="Index">Your Orders</a> and select the order.</li>
+        <li>Choose the items you want to return and the reason.</li>
+        <li>Print the return label and drop off the package at the nearest carrier location.</li>
+        <li>Refunds are issued within 5-7 business days of the carrier receiving your return.</li>
+    </ul>
+
+    <h5>Non-Returnable Items</h5>
+    <p>Gift cards, downloadable software, and items marked as non-returnable cannot be returned.</p>
+</div>

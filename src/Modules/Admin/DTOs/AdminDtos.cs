@@ -6,7 +6,7 @@ public class UserManagementDto
     public string Email { get; set; } = string.Empty;
     public string? FullName { get; set; }
     public bool IsLocked { get; set; }
-    public DateTime? LockoutEnd { get; set; }
+    public DateTimeOffset? LockoutEnd { get; set; }
     public DateTime CreatedAt { get; set; }
     public List<string> Roles { get; set; } = new();
 }

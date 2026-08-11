@@ -30,14 +30,15 @@ public static class InfrastructureExtensions
         .AddEntityFrameworkStores<Persistence.Data.ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
-        // JWT Authentication
+        // JWT Authentication (for API clients) - cookie remains default for MVC
         var jwtSettings = configuration.GetSection("JwtSettings");
         var secretKey = jwtSettings["SecretKey"] ?? "eCommerceWebsiteSuperSecretKey2024!@#$%^&*()VeryLong";
 
         services.AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultScheme = IdentityConstants.ApplicationScheme;
         })
         .AddJwtBearer(options =>
         {

@@ -19,9 +19,9 @@ public class GetPaymentByOrderQueryHandler : IRequestHandler<GetPaymentByOrderQu
         if (payment == null) return null;
         return new PaymentDto
         {
-            Id = payment.Id, OrderId = payment.OrderId, Amount = payment.Amount,
+            Id = payment.Id, OrderId = payment.OrderId ?? 0, Amount = payment.Amount,
             PaymentMethod = payment.PaymentMethod.ToString(), Status = payment.Status.ToString(),
-            Currency = payment.Currency, TransactionId = payment.TransactionId, CreatedAt = payment.CreatedAt
+            Currency = payment.Currency ?? "USD", TransactionId = payment.TransactionId, CreatedAt = payment.CreatedAt
         };
     }
 }

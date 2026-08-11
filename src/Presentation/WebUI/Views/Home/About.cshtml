@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "About Us";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">About Us</li>
+        </ol>
+    </nav>
+
+    <div class="text-center mb-4">
+        <h2>About Us</h2>
+        <p class="text-muted mx-auto" style="max-width: 700px;">
+            ECommerce is your one-stop online shopping destination. We offer millions of products across
+            electronics, fashion, home & garden, books, and more — delivered right to your door.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <i class="fas fa-box-open fa-3x text-amazon mb-3"></i>
+                    <h5>Wide Selection</h5>
+                    <p class="text-muted mb-0">Thousands of products from top brands across every category you can imagine.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <i class="fas fa-truck fa-3x text-amazon mb-3"></i>
+                    <h5>Fast Delivery</h5>
+                    <p class="text-muted mb-0">Free shipping on eligible orders with quick dispatch from our fulfillment centers.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <i class="fas fa-headset fa-3x text-amazon mb-3"></i>
+                    <h5>24/7 Support</h5>
+                    <p class="text-muted mb-0">Our customer service team is always available to help with any question or issue.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

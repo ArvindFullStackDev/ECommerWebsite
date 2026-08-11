@@ -6,7 +6,7 @@ using Inventory.DTOs;
 
 namespace Inventory.Queries;
 
-public record GetStockHistoryQuery(int ProductId) : IRequest<List<StockHistoryDto>>;
+public record GetStockHistoryQuery(int InventoryId) : IRequest<List<StockHistoryDto>>;
 
 public class GetStockHistoryQueryHandler : IRequestHandler<GetStockHistoryQuery, List<StockHistoryDto>>
 {
@@ -15,12 +15,12 @@ public class GetStockHistoryQueryHandler : IRequestHandler<GetStockHistoryQuery,
     public async Task<List<StockHistoryDto>> Handle(GetStockHistoryQuery request, CancellationToken ct)
     {
         return await _unitOfWork.Repository<StockHistory>().GetQueryable()
-            .Where(h => h.ProductId == request.ProductId)
+            .Where(h => h.InventoryId == request.InventoryId)
             .OrderByDescending(h => h.CreatedAt)
             .Select(h => new StockHistoryDto
             {
-                Id = h.Id, ProductId = h.ProductId, ChangeType = h.ChangeType,
-                QuantityChanged = h.QuantityChanged, NewQuantity = h.NewQuantity,
+                Id = h.Id, ProductId = h.Inventory!.ProductId, ChangeType = "Stock Change",
+                QuantityChanged = h.QuantityChange, NewQuantity = h.NewStock,
                 Notes = h.Notes, CreatedAt = h.CreatedAt
             }).ToListAsync(ct);
     }

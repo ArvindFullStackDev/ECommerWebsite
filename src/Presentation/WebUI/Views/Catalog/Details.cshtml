@@ -17,7 +17,7 @@
             <!-- Images -->
             <div class="col-md-5">
                 <div class="product-detail">
-                    <img src="@(Model.PrimaryImageUrl ?? "https://via.placeholder.com/450x450/f3f3f3/333?text=Product")" class="gallery-img img-fluid border rounded mb-3" alt="@Model.Name" id="mainImage" />
+                    <img src="@(Model.PrimaryImageUrl                                             ?? "/images/products/product.svg")" class="gallery-img img-fluid border rounded mb-3" alt="@Model.Name" id="mainImage" />
                     @if (Model.ImageUrls.Any())
                     {
                         <div class="d-flex flex-wrap">
@@ -31,7 +31,7 @@
             </div>
 
             <!-- Product Info -->
-            <div class="col-md-4">
+            <div class="col-md-4 product-info">
                 <h1 class="fs-4 fw-normal">@Model.Name</h1>
 
                 <div class="mb-2">
@@ -60,14 +60,14 @@
 
                 @if (Model.Savings > 0)
                 {
-                    <p class="mb-1"><span class="text-muted text-decoration-line-through">$@Model.Price.ToString("N2")</span></p>
+                    <p class="mb-1"><span class="text-muted text-decoration-line-through">₹@Model.Price.ToString("N2")</span></p>
                 }
                 <div class="product-price fs-3 mb-2">
-                    $@Model.DisplayPrice?.ToString("N2")
+                    ₹@Model.DisplayPrice?.ToString("N2")
                 </div>
                 @if (Model.Savings > 0)
                 {
-                    <p class="text-success small mb-2">You save $@Model.Savings?.ToString("N2") (@Model.SavingsPercent%)</p>
+                    <p class="text-success small mb-2">You save ₹@Model.Savings?.ToString("N2") (@Model.SavingsPercent%)</p>
                 }
 
                 <hr />
@@ -97,7 +97,7 @@
                     <button class="btn btn-amazon btn-lg w-100 mb-2 add-to-cart" data-product-id="@Model.Id">
                         <i class="fas fa-shopping-cart me-1"></i> Add to Cart
                     </button>
-                    <button class="btn btn-amazon-orange btn-lg w-100 mb-2">
+                    <button class="btn btn-amazon-orange btn-lg w-100 mb-2 buy-now" data-product-id="@Model.Id">
                         <i class="fas fa-bolt me-1"></i> Buy Now
                     </button>
                 }
@@ -126,7 +126,7 @@
             <div class="col-md-3">
                 <div class="border rounded p-3">
                     <div class="product-price fs-4 mb-2">
-                        $@Model.DisplayPrice?.ToString("N2")
+                        ₹@Model.DisplayPrice?.ToString("N2")
                     </div>
                     <p class="text-success small mb-2">FREE delivery</p>
                     <p class="small text-muted mb-2">Arrives in 3-5 business days</p>
@@ -135,7 +135,7 @@
                         <button class="btn btn-amazon w-100 mb-2 add-to-cart" data-product-id="@Model.Id">
                             Add to Cart
                         </button>
-                        <button class="btn btn-amazon-orange w-100">
+                        <button class="btn btn-amazon-orange w-100 buy-now" data-product-id="@Model.Id">
                             Buy Now
                         </button>
                     }

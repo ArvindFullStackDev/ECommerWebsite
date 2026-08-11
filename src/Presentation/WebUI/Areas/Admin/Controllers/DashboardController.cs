@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,17 +12,19 @@ namespace WebUI.Areas.Admin.Controllers;
 public class DashboardController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public DashboardController(IUnitOfWork unitOfWork)
+    public DashboardController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
     {
         _unitOfWork = unitOfWork;
+        _userManager = userManager;
     }
 
     public async Task<IActionResult> Index()
     {
         var totalProducts = await _unitOfWork.Repository<Product>().CountAsync();
         var totalOrders = await _unitOfWork.Repository<Order>().CountAsync();
-        var totalCustomers = 0; // would need identity user count
+        var totalCustomers = await _userManager.Users.CountAsync();
         var totalRevenue = await _unitOfWork.Repository<Order>().GetQueryable()
             .Where(o => o.Status == Domain.Enums.OrderStatus.Delivered)
             .SumAsync(o => o.GrandTotal);
@@ -32,6 +35,7 @@ public class DashboardController : Controller
 
         ViewBag.TotalProducts = totalProducts;
         ViewBag.TotalOrders = totalOrders;
+        ViewBag.TotalCustomers = totalCustomers;
         ViewBag.TotalRevenue = totalRevenue;
         ViewBag.PendingOrders = pendingOrders;
         ViewBag.LowStockProducts = lowStockProducts;

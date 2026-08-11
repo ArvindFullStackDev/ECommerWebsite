@@ -1,4 +1,3 @@
-using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +12,10 @@ public class RemoveFromWishlistCommandHandler : IRequestHandler<RemoveFromWishli
     public RemoveFromWishlistCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<bool> Handle(RemoveFromWishlistCommand request, CancellationToken ct)
     {
-        var item = await _unitOfWork.Repository<Wishlist>().GetQueryable()
+        var item = await _unitOfWork.Repository<Domain.Entities.Wishlist>().GetQueryable()
             .FirstOrDefaultAsync(w => w.UserId == request.UserId && w.ProductId == request.ProductId, ct);
         if (item == null) return false;
-        _unitOfWork.Repository<Wishlist>().Delete(item);
+        _unitOfWork.Repository<Domain.Entities.Wishlist>().Delete(item);
         await _unitOfWork.CompleteAsync();
         return true;
     }

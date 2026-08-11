@@ -1,0 +1,59 @@
+@model List<Brand>
+@{
+    ViewData["Title"] = "Brands";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Brands</h4>
+    <a asp-action="Create" class="btn btn-amazon"><i class="fas fa-plus me-1"></i>Add Brand</a>
+</div>
+
+<div class="content-section p-0">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th class="text-end">Products</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td>@b.Name</td>
+                        <td><small class="text-muted">@b.Slug</small></td>
+                        <td class="text-end">@b.Products.Count</td>
+                        <td class="text-center">
+                            @if (b.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@b.Id" class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></a>
+                            <form asp-action="Delete" method="post" class="d-inline"
+                                  onsubmit="return confirm('Delete brand @b.Name?')">
+                                <input type="hidden" name="id" value="@b.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No brands found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

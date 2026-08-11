@@ -1,4 +1,3 @@
-using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +12,7 @@ public class GetWishlistCountQueryHandler : IRequestHandler<GetWishlistCountQuer
     public GetWishlistCountQueryHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<int> Handle(GetWishlistCountQuery request, CancellationToken ct)
     {
-        return await _unitOfWork.Repository<Wishlist>().GetQueryable()
+        return await _unitOfWork.Repository<Domain.Entities.Wishlist>().GetQueryable()
             .CountAsync(w => w.UserId == request.UserId, ct);
     }
 }

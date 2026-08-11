@@ -13,6 +13,7 @@ public class GetAllProductsQuery : IRequest<ApiResponse<PagedResult<ProductDto>>
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 12;
     public int? CategoryId { get; set; }
+    public List<int>? CategoryIds { get; set; }
     public int? BrandId { get; set; }
     public bool? IsFeatured { get; set; }
     public bool? IsTrending { get; set; }
@@ -40,7 +41,9 @@ public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, A
             .Where(p => p.IsActive)
             .AsQueryable();
 
-        if (request.CategoryId.HasValue)
+        if (request.CategoryIds != null && request.CategoryIds.Count > 0)
+            query = query.Where(p => request.CategoryIds.Contains(p.CategoryId));
+        else if (request.CategoryId.HasValue)
             query = query.Where(p => p.CategoryId == request.CategoryId.Value);
 
         if (request.BrandId.HasValue)

@@ -6,7 +6,7 @@ using Reviews.DTOs;
 
 namespace Reviews.Commands.CreateReview;
 
-public record CreateReviewCommand(string UserId, int ProductId, int Rating, string? Title, string? Comment) : IRequest<ReviewDto>;
+public record CreateReviewCommand(string UserId, int ProductId, int Rating, string? Comment, string? ImageUrl, string? VideoUrl) : IRequest<ReviewDto>;
 
 public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand, ReviewDto>
 {
@@ -21,15 +21,16 @@ public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand, R
         var review = new Review
         {
             UserId = request.UserId, ProductId = request.ProductId,
-            Rating = request.Rating, Title = request.Title, Comment = request.Comment
+            Rating = request.Rating, Comment = request.Comment,
+            ImageUrl = request.ImageUrl, VideoUrl = request.VideoUrl
         };
-        await _unitOfWork.Repository<Review>().AddAsync(review, ct);
-        await _unitOfWork.CompleteAsync(ct);
+        await _unitOfWork.Repository<Review>().AddAsync(review);
+        await _unitOfWork.CompleteAsync();
 
         return new ReviewDto
         {
             Id = review.Id, ProductId = review.ProductId, UserId = review.UserId,
-            Rating = review.Rating, Title = review.Title, Comment = review.Comment,
+            Rating = review.Rating, Comment = review.Comment,
             LikeCount = 0, CreatedAt = review.CreatedAt
         };
     }

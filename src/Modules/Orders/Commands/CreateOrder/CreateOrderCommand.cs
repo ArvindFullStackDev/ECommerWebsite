@@ -17,25 +17,26 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Ord
     public CreateOrderCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<Order> Handle(CreateOrderCommand request, CancellationToken ct)
     {
-        var cart = await _unitOfWork.Repository<Cart>().GetQueryable()
+        var cartRepo = _unitOfWork.Repository<Domain.Entities.Cart>();
+        var cart = await cartRepo.GetQueryable()
             .Include(c => c.Items.Where(i => !i.IsSavedForLater)).ThenInclude(i => i.Product)
             .FirstOrDefaultAsync(c => c.UserId == request.UserId, ct);
         if (cart == null || !cart.Items.Any()) throw new InvalidOperationException("Cart is empty");
 
         var activeItems = cart.Items.Where(i => !i.IsSavedForLater).ToList();
         var subTotal = activeItems.Sum(i => i.UnitPrice * i.Quantity);
-        var shippingCharge = request.ShippingMethod == ShippingMethod.Standard && subTotal >= 50 ? 0 : request.ShippingMethod switch
+        var shippingCharge = request.ShippingMethod == ShippingMethod.Standard && subTotal >= 4250 ? 0 : request.ShippingMethod switch
         {
-            ShippingMethod.Express => 12.99m,
-            ShippingMethod.Overnight => 24.99m,
-            _ => 5.99m
+            ShippingMethod.Express => 1104.15m,
+            ShippingMethod.Overnight => 2124.15m,
+            _ => 509.15m
         };
         var taxAmount = subTotal * 0.085m;
         var discountAmount = 0m;
         if (!string.IsNullOrEmpty(request.CouponCode))
         {
             var coupon = await _unitOfWork.Repository<Coupon>().GetQueryable()
-                .FirstOrDefaultAsync(c => c.Code == request.CouponCode && c.IsActive && c.ValidUntil >= DateTime.UtcNow, ct);
+                .FirstOrDefaultAsync(c => c.Code == request.CouponCode && c.IsActive && c.ValidTo >= DateTime.UtcNow, ct);
             if (coupon != null)
             {
                 discountAmount = coupon.DiscountType == DiscountType.Percentage
@@ -67,9 +68,9 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Ord
             });
         }
 
-        await _unitOfWork.Repository<Order>().AddAsync(order, ct);
+        await _unitOfWork.Repository<Order>().AddAsync(order);
         foreach (var item in activeItems) _unitOfWork.Repository<CartItem>().Delete(item);
-        await _unitOfWork.CompleteAsync(ct);
+        await _unitOfWork.CompleteAsync();
         return order;
     }
 }

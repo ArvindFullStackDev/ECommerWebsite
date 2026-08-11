@@ -65,10 +65,11 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<Persistence.Data.ApplicationDbContext>();
         context.Database.EnsureCreated();
+        await Persistence.Seeds.ApplicationDbContextSeed.EnsureSchemaAsync(context);
 
         var userManager = services.GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<Microsoft.AspNetCore.Identity.IdentityUser>>();
         var roleManager = services.GetRequiredService<Microsoft.AspNetCore.Identity.RoleManager<Microsoft.AspNetCore.Identity.IdentityRole>>();
-        await Persistence.Seeds.ApplicationDbContextSeed.SeedAsync(context, userManager, roleManager);
+        await Persistence.Seeds.ApplicationDbContextSeed.SeedAsync(context, userManager, roleManager, app.Environment.WebRootPath);
     }
     catch (Exception ex)
     {

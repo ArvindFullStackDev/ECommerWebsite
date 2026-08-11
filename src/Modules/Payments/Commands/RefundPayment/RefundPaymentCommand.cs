@@ -18,7 +18,7 @@ public class RefundPaymentCommandHandler : IRequestHandler<RefundPaymentCommand,
             .FirstOrDefaultAsync(p => p.Id == request.PaymentId, ct);
         if (payment == null || payment.Status == PaymentStatus.Refunded) return false;
         payment.Status = PaymentStatus.Refunded;
-        await _unitOfWork.CompleteAsync(ct);
+        await _unitOfWork.CompleteAsync();
         return true;
     }
 }

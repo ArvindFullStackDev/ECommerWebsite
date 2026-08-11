@@ -20,7 +20,7 @@ public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, boo
             return false;
         order.Status = OrderStatus.Cancelled;
         order.CancellationReason = request.Reason;
-        await _unitOfWork.CompleteAsync(ct);
+        await _unitOfWork.CompleteAsync();
         return true;
     }
 }

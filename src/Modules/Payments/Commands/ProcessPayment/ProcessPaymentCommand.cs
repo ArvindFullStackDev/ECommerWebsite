@@ -4,7 +4,6 @@ using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Payments.DTOs;
-using Payments.Interfaces;
 
 namespace Payments.Commands.ProcessPayment;
 
@@ -13,12 +12,7 @@ public record ProcessPaymentCommand(int OrderId, string PaymentMethod, decimal A
 public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentCommand, PaymentDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IEnumerable<IPaymentService> _paymentServices;
-    public ProcessPaymentCommandHandler(IUnitOfWork unitOfWork, IEnumerable<IPaymentService> paymentServices)
-    {
-        _unitOfWork = unitOfWork;
-        _paymentServices = paymentServices;
-    }
+    public ProcessPaymentCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<PaymentDto> Handle(ProcessPaymentCommand request, CancellationToken ct)
     {
         var order = await _unitOfWork.Repository<Order>().GetQueryable()
@@ -34,14 +28,14 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
             Currency = "USD"
         };
 
-        await _unitOfWork.Repository<Payment>().AddAsync(payment, ct);
-        await _unitOfWork.CompleteAsync(ct);
+        await _unitOfWork.Repository<Payment>().AddAsync(payment);
+        await _unitOfWork.CompleteAsync();
 
         return new PaymentDto
         {
-            Id = payment.Id, OrderId = payment.OrderId, Amount = payment.Amount,
+            Id = payment.Id, OrderId = payment.OrderId ?? 0, Amount = payment.Amount,
             PaymentMethod = payment.PaymentMethod.ToString(), Status = payment.Status.ToString(),
-            Currency = payment.Currency, CreatedAt = payment.CreatedAt
+            Currency = payment.Currency ?? "USD", CreatedAt = payment.CreatedAt
         };
     }
 }

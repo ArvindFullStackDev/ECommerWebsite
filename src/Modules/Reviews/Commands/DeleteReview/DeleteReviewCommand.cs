@@ -17,7 +17,7 @@ public class DeleteReviewCommandHandler : IRequestHandler<DeleteReviewCommand, b
             .FirstOrDefaultAsync(r => r.Id == request.ReviewId && r.UserId == request.UserId, ct);
         if (review == null) return false;
         _unitOfWork.Repository<Review>().Delete(review);
-        await _unitOfWork.CompleteAsync(ct);
+        await _unitOfWork.CompleteAsync();
         return true;
     }
 }

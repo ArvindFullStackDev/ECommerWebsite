@@ -33,44 +33,45 @@
                     <span class="text-muted small">Price</span>
                 </div>
 
-                @foreach (var item in activeItems)
-                {
-                    <div class="cart-item">
-                        <div class="row align-items-center">
-                            <div class="col-md-2">
-                                <img src="@(item.Product.Images.FirstOrDefault()?.ImageUrl ?? "https://via.placeholder.com/120x120")" class="img-fluid" alt="@item.Product.Name">
-                            </div>
-                            <div class="col-md-5">
-                                <h6 class="mb-1">
-                                    <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.ProductId" class="text-decoration-none">
-                                        @item.Product.Name
-                                    </a>
-                                </h6>
-                                @if (!string.IsNullOrEmpty(item.Product.SKU))
-                                {
-                                    <small class="text-muted">SKU: @item.Product.SKU</small>
-                                }
-                                <div class="mt-2">
-                                    <a href="#" class="text-danger small me-3 remove-cart-item" data-cart-item-id="@item.Id">
-                                        <i class="fas fa-trash me-1"></i>Delete
-                                    </a>
-                                    <a href="#" class="small save-for-later" data-cart-item-id="@item.Id">
-                                        <i class="fas fa-bookmark me-1"></i>Save for later
-                                    </a>
+                    @foreach (var item in activeItems)
+                    {
+                        <div class="cart-item">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <img src="@(item.Product.Images.                                        FirstOrDefault()?.ImageUrl ?? "/images/products/product-small.svg")" class="img-fluid" alt="@item.Product.Name">
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="qty-selector">
-                                    <button class="qty-minus" data-cart-item-id="@item.Id">-</button>
-                                    <input type="text" class="cart-qty-input" data-cart-item-id="@item.Id" value="@item.Quantity" readonly />
-                                    <button class="qty-plus" data-cart-item-id="@item.Id">+</button>
+                                <div class="col-md-5">
+                                    <h6 class="mb-1">
+                                        <a asp-controller="Catalog" asp-action="Details" asp-route-id="@item.ProductId" class="text-decoration-none">
+                                            @item.Product.Name
+                                        </a>
+                                    </h6>
+                                    @if (!string.IsNullOrEmpty(item.Product.SKU))
+                                    {
+                                        <small class="text-muted">SKU: @item.Product.SKU</small>
+                                    }
+                                    <div class="mt-2">
+                                        <a href="#" class="text-danger small me-3 remove-cart-item" data-cart-item-id="@item.Id">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </a>
+                                        <a href="#" class="small save-for-later" data-cart-item-id="@item.Id">
+                                            <i class="fas fa-bookmark me-1"></i>Save for later
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2 text-end">
-                                <span class="product-price fs-5">$@((item.UnitPrice * item.Quantity).ToString("N2"))</span>
+                                <div class="col-md-3">
+                                    <div class="qty-selector">
+                                        <button class="qty-minus" data-cart-item-id="@item.Id">-</button>
+                                        <input type="text" class="cart-qty-input" data-cart-item-id="@item.Id" value="@item.Quantity" readonly />
+                                        <button class="qty-plus" data-cart-item-id="@item.Id">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <span class="product-price fs-5">₹@((item.UnitPrice * item.Quantity).ToString("N2"))</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
 
                 @if (savedItems.Any())
@@ -81,19 +82,26 @@
                         <div class="cart-item">
                             <div class="row align-items-center">
                                 <div class="col-md-2">
-                                    <img src="@(item.Product.Images.FirstOrDefault()?.ImageUrl ?? "https://via.placeholder.com/120x120")" alt="@item.Product.Name" class="img-fluid">
+                                    <img src="@(item.Product.Images.                                        FirstOrDefault()?.ImageUrl ?? "/images/products/product-small.svg")" alt="@item.Product.Name" class="img-fluid">
                                 </div>
                                 <div class="col-md-7">
                                     <h6 class="mb-1">@item.Product.Name</h6>
+                                    <div class="mt-2">
+                                        <a href="#" class="text-success small me-3 move-to-cart" data-cart-item-id="@item.Id">
+                                            <i class="fas fa-cart-plus me-1"></i>Move to cart
+                                        </a>
+                                        <a href="#" class="text-danger small remove-cart-item" data-cart-item-id="@item.Id">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="col-md-3 text-end">
-                                    <span class="product-price">$@(item.UnitPrice.ToString("N2"))</span>
+                                    <span class="product-price">₹@(item.UnitPrice.ToString("N2"))</span>
                                 </div>
                             </div>
                         </div>
                     }
                 }
-            }
         </div>
 
         <!-- Cart Summary -->
@@ -104,7 +112,7 @@
                     <h5 class="mb-3">Order Summary</h5>
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Items (@activeItems.Sum(i => i.Quantity)):</span>
-                        <span>$@subtotal.ToString("N2")</span>
+                        <span>₹@subtotal.ToString("N2")</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Shipping:</span>
@@ -113,7 +121,7 @@
                     <hr />
                     <div class="d-flex justify-content-between mb-3">
                         <strong>Order Total:</strong>
-                        <strong class="product-price fs-5">$@subtotal.ToString("N2")</strong>
+                        <strong class="product-price fs-5">₹@subtotal.ToString("N2")</strong>
                     </div>
                     <a asp-controller="Checkout" asp-action="Index" class="btn btn-amazon btn-lg w-100">
                         <i class="fas fa-lock me-2"></i>Proceed to Checkout

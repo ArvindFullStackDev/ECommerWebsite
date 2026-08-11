@@ -1,4 +1,3 @@
-using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +12,11 @@ public class AddToWishlistCommandHandler : IRequestHandler<AddToWishlistCommand,
     public AddToWishlistCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<bool> Handle(AddToWishlistCommand request, CancellationToken ct)
     {
-        var exists = await _unitOfWork.Repository<Wishlist>().GetQueryable()
+        var exists = await _unitOfWork.Repository<Domain.Entities.Wishlist>().GetQueryable()
             .AnyAsync(w => w.UserId == request.UserId && w.ProductId == request.ProductId, ct);
         if (exists) return false;
 
-        await _unitOfWork.Repository<Wishlist>().AddAsync(new Wishlist
+        await _unitOfWork.Repository<Domain.Entities.Wishlist>().AddAsync(new Domain.Entities.Wishlist
         {
             UserId = request.UserId, ProductId = request.ProductId
         });

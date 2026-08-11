@@ -1,9 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+using Domain.Entities;
+using Domain.Interfaces;
 using Identity.Commands.Login;
 using Identity.Commands.Register;
 using Identity.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebUI.Controllers;
 
@@ -11,11 +16,16 @@ public class AccountController : Controller
 {
     private readonly IMediator _mediator;
     private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ICurrentUserService _currentUser;
 
-    public AccountController(IMediator mediator, SignInManager<IdentityUser> signInManager)
+    public AccountController(IMediator mediator, SignInManager<IdentityUser> signInManager,
+        IUnitOfWork unitOfWork, ICurrentUserService currentUser)
     {
         _mediator = mediator;
         _signInManager = signInManager;
+        _unitOfWork = unitOfWork;
+        _currentUser = currentUser;
     }
 
     [HttpGet]

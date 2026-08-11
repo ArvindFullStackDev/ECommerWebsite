@@ -9,3 +9,4 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Domain\obj\Debug\net10.0\Domain.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Domain\obj\Debug\net10.0\refint\Domain.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Domain\obj\Debug\net10.0\Domain.pdb
 E:\New folder (3)\Learn\ECommerceWebsite\src\Domain\obj\Debug\net10.0\ref\Domain.dll
+E:\New folder (3)\Learn\ECommerceWebsite\src\Domain\obj\Debug\net10.0\Domain.sourcelink.json

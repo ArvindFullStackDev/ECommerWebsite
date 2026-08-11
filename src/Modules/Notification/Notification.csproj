@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Application\Application.csproj" />
     <ProjectReference Include="..\..\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.csproj" />
@@ -13,4 +17,3 @@
   </PropertyGroup>
 
 </Project>
-

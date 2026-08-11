@@ -18,13 +18,13 @@ public class GetDashboardStatsQueryHandler : IRequestHandler<GetDashboardStatsQu
         var today = DateTime.UtcNow.Date;
         var orders = _unitOfWork.Repository<Order>().GetQueryable();
         var products = _unitOfWork.Repository<Product>().GetQueryable();
-        var inventory = _unitOfWork.Repository<Inventory>().GetQueryable();
+        var inventory = _unitOfWork.Repository<Domain.Entities.Inventory>().GetQueryable();
 
         var totalRevenue = await orders.Where(o => o.Status == OrderStatus.Delivered).SumAsync(o => (decimal?)o.GrandTotal, ct) ?? 0;
         var totalOrders = await orders.CountAsync(ct);
         var totalProducts = await products.CountAsync(ct);
         var pendingOrders = await orders.CountAsync(o => o.Status == OrderStatus.Pending, ct);
-        var lowStockItems = await inventory.CountAsync(i => (i.QuantityInStock - i.ReservedQuantity) <= i.LowStockThreshold, ct);
+        var lowStockItems = await inventory.CountAsync(i => (i.Quantity - i.ReservedQuantity) <= 5, ct);
         var revenueToday = await orders.Where(o => o.Status == OrderStatus.Delivered && o.CreatedAt >= today).SumAsync(o => (decimal?)o.GrandTotal, ct) ?? 0;
         var ordersToday = await orders.CountAsync(o => o.CreatedAt >= today, ct);
 

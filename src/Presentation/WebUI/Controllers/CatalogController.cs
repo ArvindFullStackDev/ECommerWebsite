@@ -15,8 +15,11 @@ public class CatalogController : Controller
         _mediator = mediator;
     }
 
-    public async Task<IActionResult> Index(int? categoryId, int? brandId, string? sortBy, int page = 1)
+    public async Task<IActionResult> Index(int? categoryId, string? slug, int? brandId, string? sortBy, int page = 1)
     {
+        var categoriesResult = await _mediator.Send(new GetAllCategoriesQuery { IsActive = true });
+        var categories = categoriesResult.Data ?? new List<CategoryDto>();
+
         var query = new GetAllProductsQuery
         {
             CategoryId = categoryId,
@@ -26,11 +29,26 @@ public class CatalogController : Controller
             PageSize = 12
         };
 
-        var categoriesResult = await _mediator.Send(new GetAllCategoriesQuery { IsActive = true });
+        if (categoryId == null && !string.IsNullOrWhiteSpace(slug))
+        {
+            var match = categories.FirstOrDefault(c => string.Equals(c.Slug, slug, StringComparison.OrdinalIgnoreCase))
+                ?? categories.SelectMany(c => c.SubCategories)
+                    .FirstOrDefault(c => string.Equals(c.Slug, slug, StringComparison.OrdinalIgnoreCase));
+            if (match != null)
+            {
+                query.CategoryId = match.Id;
+                if (match.SubCategories.Count > 0)
+                {
+                    query.CategoryIds = new List<int> { match.Id };
+                    query.CategoryIds.AddRange(match.SubCategories.Select(s => s.Id));
+                }
+            }
+        }
+
         var brandsResult = await _mediator.Send(new GetAllBrandsQuery { IsActive = true });
         var productsResult = await _mediator.Send(query);
 
-        ViewBag.Categories = categoriesResult.Data ?? new List<CategoryDto>();
+        ViewBag.Categories = categories;
         ViewBag.Brands = brandsResult.Data ?? new List<BrandDto>();
         ViewBag.SelectedCategoryId = categoryId;
         ViewBag.SelectedBrandId = brandId;

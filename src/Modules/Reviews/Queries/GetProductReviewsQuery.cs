@@ -20,8 +20,8 @@ public class GetProductReviewsQueryHandler : IRequestHandler<GetProductReviewsQu
             .Select(r => new ReviewDto
             {
                 Id = r.Id, ProductId = r.ProductId, UserId = r.UserId, UserName = r.UserId,
-                Rating = r.Rating, Title = r.Title, Comment = r.Comment,
-                LikeCount = r.Likes.Count, CreatedAt = r.CreatedAt
+                Rating = r.Rating, Comment = r.Comment,
+                LikeCount = r.ReviewLikes.Count, CreatedAt = r.CreatedAt
             }).ToListAsync(ct);
     }
 }

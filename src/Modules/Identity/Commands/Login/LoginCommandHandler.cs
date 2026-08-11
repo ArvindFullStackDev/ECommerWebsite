@@ -55,6 +55,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
         var token = await _jwtService.GenerateTokenAsync(user);
         var roles = await _userManager.GetRolesAsync(user);
 
+        await _signInManager.SignInAsync(user, isPersistent: request.RememberMe);
+
         return new AuthResponse
         {
             Success = true,

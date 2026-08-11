@@ -1,0 +1,38 @@
+@model List<ProductDto>
+@{
+    ViewData["Title"] = "Best Sellers";
+}
+
+<div class="container-fluid px-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Best Sellers</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-center mb-3">
+        <i class="fas fa-trophy fs-2 text-warning me-2"></i>
+        <h4 class="mb-0">Best Sellers</h4>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row g-3">
+            @foreach (var product in Model)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    <partial name="_ProductCard" model="product" />
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-trophy fa-4x text-muted mb-3"></i>
+            <h4>No best sellers found</h4>
+            <p class="text-muted">Check back soon</p>
+        </div>
+    }
+</div>

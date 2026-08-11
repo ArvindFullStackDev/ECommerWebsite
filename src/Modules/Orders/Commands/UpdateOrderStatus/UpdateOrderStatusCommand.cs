@@ -21,7 +21,7 @@ public class UpdateOrderStatusCommandHandler : IRequestHandler<UpdateOrderStatus
         if (request.NewStatus == OrderStatus.Confirmed) order.ConfirmedAt = DateTime.UtcNow;
         if (request.NewStatus == OrderStatus.Shipped) { order.ShippedAt = DateTime.UtcNow; order.TrackingNumber = request.TrackingNumber; }
         if (request.NewStatus == OrderStatus.Delivered) order.DeliveredAt = DateTime.UtcNow;
-        await _unitOfWork.CompleteAsync(ct);
+        await _unitOfWork.CompleteAsync();
         return true;
     }
 }

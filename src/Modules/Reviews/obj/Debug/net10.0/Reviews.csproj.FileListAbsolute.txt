@@ -17,3 +17,4 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Reviews\obj\Debug\net10.0\R
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Reviews\obj\Debug\net10.0\refint\Reviews.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Reviews\obj\Debug\net10.0\Reviews.pdb
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Reviews\obj\Debug\net10.0\ref\Reviews.dll
+E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Reviews\obj\Debug\net10.0\Reviews.sourcelink.json

@@ -17,3 +17,4 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Cart\obj\Debug\net10.0\Cart
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Cart\obj\Debug\net10.0\refint\Cart.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Cart\obj\Debug\net10.0\Cart.pdb
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Cart\obj\Debug\net10.0\ref\Cart.dll
+E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Cart\obj\Debug\net10.0\Cart.sourcelink.json

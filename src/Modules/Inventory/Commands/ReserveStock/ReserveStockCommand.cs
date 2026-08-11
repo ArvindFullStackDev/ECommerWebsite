@@ -1,4 +1,3 @@
-using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +12,12 @@ public class ReserveStockCommandHandler : IRequestHandler<ReserveStockCommand, b
     public ReserveStockCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<bool> Handle(ReserveStockCommand request, CancellationToken ct)
     {
-        var inventory = await _unitOfWork.Repository<Inventory>().GetQueryable()
+        var inventory = await _unitOfWork.Repository<Domain.Entities.Inventory>().GetQueryable()
             .FirstOrDefaultAsync(i => i.ProductId == request.ProductId, ct);
-        if (inventory == null || inventory.QuantityInStock - inventory.ReservedQuantity < request.Quantity)
+        if (inventory == null || inventory.Quantity - inventory.ReservedQuantity < request.Quantity)
             return false;
         inventory.ReservedQuantity += request.Quantity;
-        await _unitOfWork.CompleteAsync(ct);
+        await _unitOfWork.CompleteAsync();
         return true;
     }
 }

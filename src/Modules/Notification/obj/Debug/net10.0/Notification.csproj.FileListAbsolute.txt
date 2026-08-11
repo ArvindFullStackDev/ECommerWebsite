@@ -17,3 +17,4 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Notification\obj\Debug\net1
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Notification\obj\Debug\net10.0\refint\Notification.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Notification\obj\Debug\net10.0\Notification.pdb
 E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Notification\obj\Debug\net10.0\ref\Notification.dll
+E:\New folder (3)\Learn\ECommerceWebsite\src\Modules\Notification\obj\Debug\net10.0\Notification.sourcelink.json

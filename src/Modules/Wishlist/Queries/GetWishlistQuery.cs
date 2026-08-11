@@ -1,4 +1,3 @@
-using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +13,7 @@ public class GetWishlistQueryHandler : IRequestHandler<GetWishlistQuery, Wishlis
     public GetWishlistQueryHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<WishlistDto> Handle(GetWishlistQuery request, CancellationToken ct)
     {
-        var items = await _unitOfWork.Repository<Wishlist>().GetQueryable()
+        var items = await _unitOfWork.Repository<Domain.Entities.Wishlist>().GetQueryable()
             .Where(w => w.UserId == request.UserId)
             .Include(w => w.Product).ThenInclude(p => p.Images)
             .OrderByDescending(w => w.CreatedAt)

@@ -21,3 +21,4 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Infrastructure\obj\Debug\net10.0\In
 E:\New folder (3)\Learn\ECommerceWebsite\src\Infrastructure\obj\Debug\net10.0\refint\Infrastructure.dll
 E:\New folder (3)\Learn\ECommerceWebsite\src\Infrastructure\obj\Debug\net10.0\Infrastructure.pdb
 E:\New folder (3)\Learn\ECommerceWebsite\src\Infrastructure\obj\Debug\net10.0\ref\Infrastructure.dll
+E:\New folder (3)\Learn\ECommerceWebsite\src\Infrastructure\obj\Debug\net10.0\Infrastructure.sourcelink.json

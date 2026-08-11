@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<div class="container py-4" style="max-width: 800px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+        </ol>
+    </nav>
+
+    <h2>Contact Us</h2>
+    <p class="text-muted">We'd love to hear from you. Reach out to us any time.</p>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-envelope fa-2x text-amazon mb-2"></i>
+                    <h6 class="mb-0">Email</h6>
+                    <a href="mailto:support@ecommerce.com" class="small">support@ecommerce.com</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-phone fa-2x text-amazon mb-2"></i>
+                    <h6 class="mb-0">Phone</h6>
+                    <span class="small">1-800-555-0199</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-map-marker-alt fa-2x text-amazon mb-2"></i>
+                    <h6 class="mb-0">Address</h6>
+                    <span class="small">410 Terry Ave N, Seattle, WA</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label">Your Email</label>
+                    <input type="email" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Subject</label>
+                    <input type="text" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-control" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-amazon">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>

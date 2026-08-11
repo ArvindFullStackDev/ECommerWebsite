@@ -14,15 +14,15 @@ public class GetInventoryByProductQueryHandler : IRequestHandler<GetInventoryByP
     public GetInventoryByProductQueryHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<StockDto?> Handle(GetInventoryByProductQuery request, CancellationToken ct)
     {
-        var inv = await _unitOfWork.Repository<Inventory>().GetQueryable()
+        var inv = await _unitOfWork.Repository<Domain.Entities.Inventory>().GetQueryable()
             .Include(i => i.Product)
             .FirstOrDefaultAsync(i => i.ProductId == request.ProductId, ct);
         if (inv == null) return null;
         return new StockDto
         {
             ProductId = inv.ProductId, ProductName = inv.Product?.Name ?? "",
-            QuantityInStock = inv.QuantityInStock, ReservedQuantity = inv.ReservedQuantity,
-            LowStockThreshold = inv.LowStockThreshold, LastRestockedAt = inv.LastRestockedAt
+            QuantityInStock = inv.Quantity, ReservedQuantity = inv.ReservedQuantity,
+            LowStockThreshold = inv.Product?.LowStockThreshold ?? 5, LastRestockedAt = inv.LastModifiedAt
         };
     }
 }
