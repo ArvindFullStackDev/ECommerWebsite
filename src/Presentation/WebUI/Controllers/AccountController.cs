@@ -110,8 +110,141 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult Addresses()
+    [Authorize]
+    public async Task<IActionResult> Addresses()
     {
-        return View();
+        var addresses = await _unitOfWork.Repository<Address>().GetQueryable()
+            .Where(a => a.UserId == _currentUser.UserId)
+            .OrderByDescending(a => a.IsDefault)
+            .ToListAsync();
+        return View(addresses);
     }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult AddAddress()
+    {
+        return View("AddressForm", new AddressFormModel { Country = "India" });
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddAddress(AddressFormModel model)
+    {
+        if (!ModelState.IsValid) return View("AddressForm", model);
+
+        var hasAny = await _unitOfWork.Repository<Address>().GetQueryable()
+            .AnyAsync(a => a.UserId == _currentUser.UserId);
+
+        var address = new Address
+        {
+            UserId = _currentUser.UserId!,
+            FullName = model.FullName!.Trim(),
+            PhoneNumber = model.PhoneNumber!.Trim(),
+            AddressLine1 = model.AddressLine1!.Trim(),
+            AddressLine2 = model.AddressLine2?.Trim(),
+            City = model.City!.Trim(),
+            State = model.State!.Trim(),
+            ZipCode = model.ZipCode!.Trim(),
+            Country = model.Country!.Trim(),
+            IsDefault = model.IsDefault || !hasAny
+        };
+        _unitOfWork.Repository<Address>().AddAsync(address);
+        await _unitOfWork.CompleteAsync();
+        return RedirectToAction(nameof(Addresses));
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> EditAddress(int id)
+    {
+        var address = await _unitOfWork.Repository<Address>().GetQueryable()
+            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == _currentUser.UserId);
+        if (address == null) return NotFound();
+
+        return View("AddressForm", new AddressFormModel
+        {
+            Id = address.Id,
+            FullName = address.FullName,
+            PhoneNumber = address.PhoneNumber,
+            AddressLine1 = address.AddressLine1,
+            AddressLine2 = address.AddressLine2,
+            City = address.City,
+            State = address.State,
+            ZipCode = address.ZipCode,
+            Country = address.Country,
+            IsDefault = address.IsDefault
+        });
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditAddress(AddressFormModel model)
+    {
+        if (!ModelState.IsValid) return View("AddressForm", model);
+
+        var address = await _unitOfWork.Repository<Address>().GetQueryable()
+            .FirstOrDefaultAsync(a => a.Id == model.Id && a.UserId == _currentUser.UserId);
+        if (address == null) return NotFound();
+
+        address.FullName = model.FullName!.Trim();
+        address.PhoneNumber = model.PhoneNumber!.Trim();
+        address.AddressLine1 = model.AddressLine1!.Trim();
+        address.AddressLine2 = model.AddressLine2?.Trim();
+        address.City = model.City!.Trim();
+        address.State = model.State!.Trim();
+        address.ZipCode = model.ZipCode!.Trim();
+        address.Country = model.Country!.Trim();
+        address.IsDefault = model.IsDefault;
+        _unitOfWork.Repository<Address>().Update(address);
+        await _unitOfWork.CompleteAsync();
+        return RedirectToAction(nameof(Addresses));
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveAddress(int id)
+    {
+        var address = await _unitOfWork.Repository<Address>().GetQueryable()
+            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == _currentUser.UserId);
+        if (address != null)
+        {
+            _unitOfWork.Repository<Address>().Delete(address);
+            await _unitOfWork.CompleteAsync();
+        }
+        return RedirectToAction(nameof(Addresses));
+    }
+}
+
+public class AddressFormModel
+{
+    public int Id { get; set; }
+
+    [Required]
+    public string? FullName { get; set; }
+
+    [Required]
+    public string? PhoneNumber { get; set; }
+
+    [Required]
+    public string? AddressLine1 { get; set; }
+
+    public string? AddressLine2 { get; set; }
+
+    [Required]
+    public string? City { get; set; }
+
+    [Required]
+    public string? State { get; set; }
+
+    [Required]
+    public string? ZipCode { get; set; }
+
+    [Required]
+    public string? Country { get; set; }
+
+    public bool IsDefault { get; set; }
 }

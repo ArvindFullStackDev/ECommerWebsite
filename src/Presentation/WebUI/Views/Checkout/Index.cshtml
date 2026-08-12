@@ -27,10 +27,11 @@
                             @foreach (var addr in Model.Addresses)
                             {
                                 <div class="col-md-6">
-                                    <div class="border rounded p-3 @(addr.IsDefault ? "border-primary" : "")">
+                                    <div class="border rounded p-3 address-option @(addr.IsDefault ? "border-primary" : "")"
+                                         data-address-card="1">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="ShippingAddressId" value="@addr.Id"
-                                                   @(addr.IsDefault ? "checked" : "")>
+                                                   @(Model.Form.ShippingAddressId == addr.Id ? "checked" : "")>
                                             <label class="form-check-label">
                                                 <strong>@addr.FullName</strong><br />
                                                 <span class="small">@addr.AddressLine1, @addr.City, @addr.State @addr.ZipCode</span><br />
@@ -40,9 +41,19 @@
                                     </div>
                                 </div>
                             }
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 address-option h-100" data-address-card="1">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="ShippingAddressId" value="0"
+                                               @(Model.Form.ShippingAddressId == 0 ? "checked" : "")>
+                                        <label class="form-check-label">
+                                            <strong>New Address</strong><br />
+                                            <span class="small text-muted">Enter a new shipping address below</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <hr />
-                        <div class="small text-muted mb-2" id="newAddressHint">Or enter a new address below:</div>
                     }
 
                     <div class="row g-2" id="newAddressFields">
@@ -264,15 +275,17 @@
         var addressRadios = document.querySelectorAll('input[name="ShippingAddressId"]');
         function syncAddressFields() {
             var usingSaved = document.querySelector('input[name="ShippingAddressId"]:checked');
+            var usingNewAddress = usingSaved && usingSaved.value === '0';
+            var disableFields = !!usingSaved && !usingNewAddress;
             newAddressFields.querySelectorAll('input').forEach(function (input) {
-                input.disabled = !!usingSaved;
-                input.classList.toggle('disabled', !!usingSaved);
+                input.disabled = disableFields;
+                input.classList.toggle('disabled', disableFields);
             });
-            if (usingSaved) {
-                document.getElementById('newAddressHint').style.display = 'none';
-            } else {
-                document.getElementById('newAddressHint').style.display = '';
-            }
+            newAddressFields.style.opacity = disableFields ? '0.55' : '1';
+            document.querySelectorAll('[data-address-card]').forEach(function (card) {
+                var radio = card.querySelector('input[name="ShippingAddressId"]');
+                card.classList.toggle('border-primary', radio && radio.checked);
+            });
         }
         addressRadios.forEach(function (radio) {
             radio.addEventListener('change', syncAddressFields);

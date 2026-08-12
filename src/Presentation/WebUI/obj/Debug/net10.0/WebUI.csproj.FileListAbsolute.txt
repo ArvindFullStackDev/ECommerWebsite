@@ -677,5 +677,5 @@ E:\New folder (3)\Learn\ECommerceWebsite\src\Presentation\WebUI\obj\Debug\net10.
 E:\New folder (3)\Learn\ECommerceWebsite\src\Presentation\WebUI\obj\Debug\net10.0\compressed\ime3nswfi2-{0}-4ajghu973d-4ajghu973d.gz
 E:\New folder (3)\Learn\ECommerceWebsite\src\Presentation\WebUI\obj\Debug\net10.0\compressed\mor3kqbp16-{0}-uf3l09z8t1-uf3l09z8t1.gz
 E:\New folder (3)\Learn\ECommerceWebsite\src\Presentation\WebUI\obj\Debug\net10.0\compressed\pb5nc6slic-{0}-k6gw3v3504-k6gw3v3504.gz
-E:\New folder (3)\Learn\ECommerceWebsite\src\Presentation\WebUI\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 E:\New folder (3)\Learn\ECommerceWebsite\src\Presentation\WebUI\obj\Debug\net10.0\compressed\3brek6zv2z-{0}-2xciyvu74g-2xciyvu74g.gz
+E:\New folder (3)\Learn\ECommerceWebsite\src\Presentation\WebUI\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

@@ -1,0 +1,74 @@
+@model AddressFormModel
+@{
+    ViewData["Title"] = Model.Id > 0 ? "Edit Address" : "Add Address";
+}
+
+<div class="container py-4" style="max-width: 700px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Account" asp-action="Profile">Your Account</a></li>
+            <li class="breadcrumb-item"><a asp-action="Addresses">Your Addresses</a></li>
+            <li class="breadcrumb-item active">@(Model.Id > 0 ? "Edit Address" : "Add Address")</li>
+        </ol>
+    </nav>
+
+    <div class="content-section">
+        <h4 class="fw-bold mb-3">@(Model.Id > 0 ? "Edit Address" : "Add Address")</h4>
+
+        <form asp-action="@(Model.Id > 0 ? "EditAddress" : "AddAddress")" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Full Name *</label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Phone Number *</label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Address Line 1 *</label>
+                    <input asp-for="AddressLine1" class="form-control" />
+                    <span asp-validation-for="AddressLine1" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Address Line 2</label>
+                    <input asp-for="AddressLine2" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">City *</label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">State *</label>
+                    <input asp-for="State" class="form-control" />
+                    <span asp-validation-for="State" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Zip Code *</label>
+                    <input asp-for="ZipCode" class="form-control" />
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Country *</label>
+                    <input asp-for="Country" class="form-control" />
+                    <span asp-validation-for="Country" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 d-flex align-items-end pb-2">
+                    <div class="form-check">
+                        <input asp-for="IsDefault" class="form-check-input" />
+                        <label class="form-check-label">Set as default address</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-amazon"><i class="fas fa-save me-1"></i>Save Address</button>
+                <a asp-action="Addresses" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

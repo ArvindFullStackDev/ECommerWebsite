@@ -172,13 +172,15 @@ public class CheckoutController : Controller
             .Where(a => a.UserId == _currentUser.UserId)
             .ToListAsync();
 
+        var defaultAddress = addresses.FirstOrDefault(a => a.IsDefault) ?? addresses.FirstOrDefault();
+
         return new CheckoutViewModel
         {
             CartItems = cart.Items.Where(i => !i.IsSavedForLater).ToList(),
             SubTotal = cart.Items.Where(i => !i.IsSavedForLater).Sum(i => i.UnitPrice * i.Quantity),
             Addresses = addresses,
             PaymentMethods = Enum.GetValues<PaymentMethod>().ToList(),
-            Form = new PlaceOrderModel()
+            Form = new PlaceOrderModel { ShippingAddressId = defaultAddress?.Id ?? 0 }
         };
     }
 
